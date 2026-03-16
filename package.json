@@ -12,6 +12,31 @@
     "build": "npm run build --workspace @agent-memory/core && npm run build --workspace agent-memory && npm run build --workspace @agent-memory/nextjs",
     "test": "npm run test --workspace @agent-memory/core && npm run test --workspace agent-memory && npm run test --workspace @agent-memory/nextjs --if-present",
     "lint": "npm run lint --workspace @agent-memory/core && npm run lint --workspace agent-memory && npm run lint --workspace @agent-memory/nextjs",
-    "format": "npm run format --workspace @agent-memory/core && npm run format --workspace agent-memory && npm run format --workspace @agent-memory/nextjs --if-present"
+    "format": "npm run format --workspace @agent-memory/core && npm run format --workspace agent-memory && npm run format --workspace @agent-memory/nextjs --if-present",
+    "format:check": "prettier --check \"*.{json,md,yml,yaml}\" \"{core,cli,nextjs,docs,.github}/**/*.{ts,tsx,js,json,md,yml,yaml}\"",
+    "precommit": "lint-staged",
+    "prepush": "npm run lint && npm run test && npm run build",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "core/src/**/*.ts": [
+      "npm run lint --workspace @agent-memory/core -- --fix",
+      "prettier --write"
+    ],
+    "cli/{src,tests}/**/*.ts": [
+      "npm run lint --workspace agent-memory -- --fix",
+      "prettier --write"
+    ],
+    "nextjs/**/*.{js,ts,tsx}": [
+      "npm run lint --workspace @agent-memory/nextjs --",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": "prettier --write",
+    "{docs,.github}/**/*.{md,yml,yaml}": "prettier --write"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1"
   }
 }

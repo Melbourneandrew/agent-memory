@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,3 +34,15 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Formatting check (changed files only)
+        run: |
+          set -euo pipefail
+
+          CHANGED_FILES="$(git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" | rg '\.(ts|tsx|js|json|md|yml|yaml)$' || true)"
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No matching changed files to format-check."
+            exit 0
+          fi
+
+          printf "%s\n" "$CHANGED_FILES" | xargs -r npm exec -- prettier --check
