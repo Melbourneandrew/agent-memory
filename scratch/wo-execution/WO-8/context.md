@@ -23,6 +23,5 @@
 
 ## Delivery
 
-- Branch:
 - Branch: feat/wo-8-cli-memory-search-list-update
-- Pull Request URL:
+- Pull Request URL: https://github.com/Melbourneandrew/agent-memory/pull/12
