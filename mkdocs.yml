@@ -1,6 +1,23 @@
 site_name: Agent Memory
-site_description: Documentation for the Agent Memory monorepo.
+site_description: CLI and web UI documentation for Agent Memory.
+site_url: https://melbourneandrew.github.io/agent-memory/
+repo_url: https://github.com/Melbourneandrew/agent-memory
+repo_name: Melbourneandrew/agent-memory
 theme:
   name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+plugins:
+  - search
 nav:
   - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Command Reference: command-reference.md
+  - Usage Examples: usage-examples.md
+  - Web UI: web-ui.md
+  - Resources: resources.md
