@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,11 +50,11 @@ jobs:
           fi
 
       - name: Publish package
-        if: steps.publish_check.outputs.should_publish == 'true' && secrets.NPM_TOKEN != ''
+        if: steps.publish_check.outputs.should_publish == 'true' && env.HAS_NPM_TOKEN == 'true'
         run: npm publish --workspace @agent-memory/core --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Skip publish when NPM token missing
-        if: steps.publish_check.outputs.should_publish == 'true' && secrets.NPM_TOKEN == ''
+        if: steps.publish_check.outputs.should_publish == 'true' && env.HAS_NPM_TOKEN != 'true'
         run: echo "NPM_TOKEN secret is not configured; skipping publish."
