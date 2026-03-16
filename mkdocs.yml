@@ -1,0 +1,6 @@
+site_name: Agent Memory
+site_description: Documentation for the Agent Memory monorepo.
+theme:
+  name: material
+nav:
+  - Home: index.md
