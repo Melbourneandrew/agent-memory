@@ -45,7 +45,7 @@ describe("ConfigurationWriter", () => {
     expect(result.path).toBe(globalConfigPath);
     expect(existsSync(globalConfigPath)).toBe(true);
     const stored = JSON.parse(readFileSync(globalConfigPath, "utf-8")) as Record<string, string>;
-    expect(stored.apiKey).toBe("global-key");
+    expect(stored.api_key).toBe("global-key");
   });
 
   it("writes to local config by default when local config already exists", () => {
@@ -55,8 +55,8 @@ describe("ConfigurationWriter", () => {
     const localPath = adapter.getLocalConfigPath(testDir);
     expect(result.path).toBe(localPath);
     const stored = JSON.parse(readFileSync(localPath, "utf-8")) as Record<string, string>;
-    expect(stored.apiKey).toBe("local-key");
-    expect(stored.assistantId).toBe("seed");
+    expect(stored.api_key).toBe("local-key");
+    expect(stored.assistant_id).toBe("seed");
   });
 
   it("clears targeted configuration files", () => {
@@ -72,7 +72,7 @@ describe("ConfigurationWriter", () => {
     expect(result.values.apiKey).toBeNull();
 
     const stored = JSON.parse(readFileSync(globalConfigPath, "utf-8")) as Record<string, string>;
-    expect(stored.apiKey).toBeUndefined();
-    expect(stored.assistantId).toBe("seed-assistant");
+    expect(stored.api_key).toBeUndefined();
+    expect(stored.assistant_id).toBe("seed-assistant");
   });
 });

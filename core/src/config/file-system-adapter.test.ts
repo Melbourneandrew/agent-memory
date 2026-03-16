@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -26,6 +26,11 @@ describe("FileSystemAdapter", () => {
     });
 
     expect(adapter.exists(path)).toBe(true);
+    const storedRaw = JSON.parse(readFileSync(path, "utf-8")) as Record<string, string>;
+    expect(storedRaw).toEqual({
+      api_key: "test-key",
+      assistant_id: "assistant-1"
+    });
     expect(adapter.readConfiguration(path)).toEqual({
       apiKey: "test-key",
       assistantId: "assistant-1"
@@ -40,5 +45,30 @@ describe("FileSystemAdapter", () => {
       apiKey: null,
       assistantId: null
     });
+  });
+
+  it("parses legacy camelCase keys for compatibility", () => {
+    const path = join(testDir, "legacy-config.json");
+    writeFileSync(path, JSON.stringify({ apiKey: "legacy-key", assistantId: "legacy-assistant" }));
+
+    expect(adapter.readConfiguration(path)).toEqual({
+      apiKey: "legacy-key",
+      assistantId: "legacy-assistant"
+    });
+  });
+
+  it("throws clear error for invalid JSON", () => {
+    const path = join(testDir, "invalid.json");
+    writeFileSync(path, "{ this is not json }");
+
+    expect(() => adapter.readConfiguration(path)).toThrow("Configuration file is invalid JSON");
+  });
+
+  it("does not leave temporary files after atomic write", () => {
+    const path = join(testDir, "atomic", "config.json");
+    adapter.writeConfiguration(path, { apiKey: "atomic-key", assistantId: null });
+
+    const dirEntries = readdirSync(join(testDir, "atomic"));
+    expect(dirEntries).toEqual(["config.json"]);
   });
 });
