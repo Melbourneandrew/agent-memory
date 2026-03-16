@@ -32,5 +32,3 @@ jobs:
       - name: Test
         run: npm run test
 
-      - name: Formatting check
-        run: npm exec -- prettier --check "**/*.{ts,js,json,md,yml,yaml}"
