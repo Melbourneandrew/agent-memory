@@ -9,11 +9,13 @@ import { CliUsageError } from "./errors";
 export interface CliRuntime {
   readonly stdout: NodeJS.WriteStream;
   readonly stderr: NodeJS.WriteStream;
+  readonly cwd: string;
 }
 
 const defaultRuntime: CliRuntime = {
   stdout: process.stdout,
-  stderr: process.stderr
+  stderr: process.stderr,
+  cwd: process.cwd()
 };
 
 export async function runCli(
@@ -39,7 +41,7 @@ export async function runCli(
       return 0;
     }
 
-    await dispatchCommand(args, handlers, writeStdout, writeStderr);
+    await dispatchCommand(args, handlers, writeStdout, writeStderr, runtime.cwd);
     return 0;
   } catch (error) {
     return handleCliError(error, writeStderr);
@@ -57,65 +59,65 @@ async function dispatchCommand(
   args: string[],
   handlers: CliCommandHandlers,
   writeStdout: (value: string) => void,
-  writeStderr: (value: string) => void
+  writeStderr: (value: string) => void,
+  cwd: string
 ): Promise<void> {
   const [command, ...commandArgs] = args;
 
   if (command === "config") {
-    await dispatchConfigSubcommand(commandArgs, handlers, writeStdout, writeStderr);
+    await dispatchConfigSubcommand(commandArgs, handlers, writeStdout, writeStderr, cwd);
     return;
   }
 
   if (command === "add") {
     requirePositional(commandArgs, "add", "<content>");
-    await handlers.add({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.add({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "search") {
     requirePositional(commandArgs, "search", "<query>");
-    await handlers.search({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.search({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "get") {
     requirePositional(commandArgs, "get", "<memory-id>");
-    await handlers.get({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.get({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "list") {
-    requireNoPositionals(commandArgs, "list");
-    await handlers.list({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.list({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "update") {
     requirePositionals(commandArgs, "update", ["<memory-id>", "<content>"]);
-    await handlers.update({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.update({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "delete") {
     requirePositional(commandArgs, "delete", "<memory-id>");
-    await handlers.delete({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.delete({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "stats") {
     requireNoPositionals(commandArgs, "stats");
-    await handlers.stats({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.stats({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "status") {
     requireNoPositionals(commandArgs, "status");
-    await handlers.status({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.status({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "web") {
-    await handlers.web({ command, args: commandArgs, writeStdout, writeStderr });
+    await handlers.web({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
@@ -126,7 +128,8 @@ async function dispatchConfigSubcommand(
   args: string[],
   handlers: CliCommandHandlers,
   writeStdout: (value: string) => void,
-  writeStderr: (value: string) => void
+  writeStderr: (value: string) => void,
+  cwd: string
 ): Promise<void> {
   if (args.length === 0) {
     throw new CliUsageError("Missing config subcommand. Use: config set|show|clear");
@@ -135,10 +138,10 @@ async function dispatchConfigSubcommand(
   const [subcommand, ...subcommandArgs] = args;
 
   if (subcommand === "set") {
-    requirePositionals(subcommandArgs, "config set", ["<key>", "<value>"]);
     await handlers.configSet({
       command: "config set",
       args: subcommandArgs,
+      cwd,
       writeStdout,
       writeStderr
     });
@@ -146,10 +149,10 @@ async function dispatchConfigSubcommand(
   }
 
   if (subcommand === "show") {
-    requireNoPositionals(subcommandArgs, "config show");
     await handlers.configShow({
       command: "config show",
       args: subcommandArgs,
+      cwd,
       writeStdout,
       writeStderr
     });
@@ -157,10 +160,10 @@ async function dispatchConfigSubcommand(
   }
 
   if (subcommand === "clear") {
-    requirePositional(subcommandArgs, "config clear", "<key>");
     await handlers.configClear({
       command: "config clear",
       args: subcommandArgs,
+      cwd,
       writeStdout,
       writeStderr
     });

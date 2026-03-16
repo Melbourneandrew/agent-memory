@@ -13,6 +13,7 @@ export async function executeCliCommand(
   args: string[],
   options?: {
     handlers?: CliCommandHandlers;
+    cwd?: string;
   }
 ): Promise<CliExecutionResult> {
   const stdout = new PassThrough();
@@ -27,7 +28,8 @@ export async function executeCliCommand(
     args,
     {
       stdout: stdout as unknown as NodeJS.WriteStream,
-      stderr: stderr as unknown as NodeJS.WriteStream
+      stderr: stderr as unknown as NodeJS.WriteStream,
+      cwd: options?.cwd ?? process.cwd()
     },
     options?.handlers
   );

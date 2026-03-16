@@ -1,6 +1,7 @@
 export interface CommandHandlerContext {
   readonly command: string;
   readonly args: string[];
+  readonly cwd: string;
   readonly writeStdout: (value: string) => void;
   readonly writeStderr: (value: string) => void;
 }

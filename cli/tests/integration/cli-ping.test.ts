@@ -28,6 +28,31 @@ describe("CLI command routing and errors", () => {
     expect(result.stderr).toBe("");
   });
 
+  test("passes list flags through to list handler", async () => {
+    const result = await executeCliCommand(["list", "--page", "2"], {
+      handlers: {
+        add: async () => undefined,
+        search: async () => undefined,
+        get: async () => undefined,
+        list: async ({ args, writeStdout }) => {
+          writeStdout(`list args: ${args.join(" ")}\n`);
+        },
+        update: async () => undefined,
+        delete: async () => undefined,
+        configSet: async () => undefined,
+        configShow: async () => undefined,
+        configClear: async () => undefined,
+        stats: async () => undefined,
+        status: async () => undefined,
+        web: async () => undefined
+      }
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain("list args: --page 2");
+  });
+
   test("returns usage error when command is unknown", async () => {
     const result = await executeCliCommand(["not-a-command"]);
 

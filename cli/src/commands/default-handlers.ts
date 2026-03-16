@@ -1,9 +1,12 @@
 import type { CliCommandHandlers, CommandHandler } from "./types";
 import { CliUsageError } from "../errors";
+import { createConfigCommandHandlers } from "./config-command-handlers";
 
 const notImplementedHandler: CommandHandler = async ({ command }) => {
   throw new CliUsageError(`Command \`${command}\` is not implemented yet.`);
 };
+
+const configHandlers = createConfigCommandHandlers();
 
 export const defaultCommandHandlers: CliCommandHandlers = {
   add: notImplementedHandler,
@@ -12,9 +15,9 @@ export const defaultCommandHandlers: CliCommandHandlers = {
   list: notImplementedHandler,
   update: notImplementedHandler,
   delete: notImplementedHandler,
-  configSet: notImplementedHandler,
-  configShow: notImplementedHandler,
-  configClear: notImplementedHandler,
+  configSet: configHandlers.configSet,
+  configShow: configHandlers.configShow,
+  configClear: configHandlers.configClear,
   stats: notImplementedHandler,
   status: notImplementedHandler,
   web: notImplementedHandler

@@ -13,7 +13,7 @@ Commands:
   delete <memory-id>             Delete a memory
   config set <key> <value>       Set configuration value
   config show                    Show effective configuration
-  config clear <key>             Clear configuration value
+  config clear                    Clear configuration file
   stats                          Show memory statistics
   status                         Show operation status
   web [--port <n>]               Launch web UI
