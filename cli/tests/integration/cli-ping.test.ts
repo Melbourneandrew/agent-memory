@@ -66,7 +66,7 @@ describe("CLI command routing and errors", () => {
 
     expect(result.exitCode).toBe(1);
     expect(result.stdout).toBe("");
-    expect(result.stderr).toContain("Unexpected argument(s) for `stats`.");
+    expect(result.stderr).toContain("Usage: agent-memory stats");
   });
 
   test("maps BackboardError to exit code 2", async () => {

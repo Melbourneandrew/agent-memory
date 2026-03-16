@@ -2,6 +2,7 @@ import type { CliCommandHandlers, CommandHandler } from "./types";
 import { CliUsageError } from "../errors";
 import { createConfigCommandHandlers } from "./config-command-handlers";
 import { createMemoryCommandHandlers } from "./memory-command-handlers";
+import { createSystemCommandHandlers } from "./system-command-handlers";
 
 const notImplementedHandler: CommandHandler = async ({ command }) => {
   throw new CliUsageError(`Command \`${command}\` is not implemented yet.`);
@@ -9,6 +10,7 @@ const notImplementedHandler: CommandHandler = async ({ command }) => {
 
 const configHandlers = createConfigCommandHandlers();
 const memoryHandlers = createMemoryCommandHandlers();
+const systemHandlers = createSystemCommandHandlers();
 
 export const defaultCommandHandlers: CliCommandHandlers = {
   add: memoryHandlers.add,
@@ -20,7 +22,7 @@ export const defaultCommandHandlers: CliCommandHandlers = {
   configSet: configHandlers.configSet,
   configShow: configHandlers.configShow,
   configClear: configHandlers.configClear,
-  stats: notImplementedHandler,
-  status: notImplementedHandler,
+  stats: systemHandlers.stats,
+  status: systemHandlers.status,
   web: notImplementedHandler
 };

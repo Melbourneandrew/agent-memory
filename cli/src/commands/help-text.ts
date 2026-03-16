@@ -14,7 +14,7 @@ Commands:
   config set <key> <value>       Set configuration value
   config show                    Show effective configuration
   config clear                   Clear configuration file
-  stats                          Show memory statistics
-  status                         Show operation status
+  stats [--format json]          Show memory statistics
+  status <operation-id> [--format json] Show operation status
   web [--port <n>]               Launch web UI
 `;

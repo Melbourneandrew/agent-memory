@@ -102,13 +102,11 @@ async function dispatchCommand(
   }
 
   if (command === "stats") {
-    requireNoPositionals(commandArgs, "stats");
     await handlers.stats({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
 
   if (command === "status") {
-    requireNoPositionals(commandArgs, "status");
     await handlers.status({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
@@ -173,12 +171,6 @@ async function dispatchConfigSubcommand(
 function requirePositional(args: string[], command: string, usage: string): void {
   if (args.length < 1 || args[0].trim().length === 0) {
     throw new CliUsageError(`Missing required argument for \`${command}\`: ${usage}`);
-  }
-}
-
-function requireNoPositionals(args: string[], command: string): void {
-  if (args.length > 0) {
-    throw new CliUsageError(`Unexpected argument(s) for \`${command}\`.`);
   }
 }
 

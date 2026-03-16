@@ -3,3 +3,4 @@ export * from "./types";
 export * from "./default-handlers";
 export * from "./config-command-handlers";
 export * from "./memory-command-handlers";
+export * from "./system-command-handlers";
