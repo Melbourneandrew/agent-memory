@@ -23,6 +23,5 @@
 
 ## Delivery
 
-- Branch:
 - Branch: feat/wo-7-cli-memory-add-get-delete
-- Pull Request URL:
+- Pull Request URL: https://github.com/Melbourneandrew/agent-memory/pull/11
