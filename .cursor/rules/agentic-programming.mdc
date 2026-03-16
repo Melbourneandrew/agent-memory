@@ -1,0 +1,26 @@
+---
+alwaysApply: true
+---
+
+We are doing fully agentic programming. This app is written entirely by coding agents, so do not hesitate to make changes or try new things. If something breaks, the agent will fix it on the next turn. Commit your changes frequently for a legible git history.
+
+Prefer a "deep modules" package structure. Prefer creating new shared utilities instead of large, cluttered files. Create directories and files as needed. Do not hesitate to refactor to gain a structural advantage.
+
+Document emerging conventions in rules and skills so they persist across agent context windows. Frequently write tests and maintain high-quality coverage. If tests fail, DO NOT COMMIT your changes. Identify why they failed and continue.
+
+Each time you are asked to complete a work order:
+
+- Check MCP for in-progress work orders.
+- Check the `scratch/wo-executions` directory for in-progress work orders that have not passed review.
+- If any in-progress work orders exist, complete them one at a time before starting new work.
+- Verify that all previous changes were tested and committed.
+- Assume the previous agent loop may have stopped mid-work-order, and confirm the previous work order is fully complete before proceeding.
+- When the current work order is complete, terminate your rollout. A new agent loop will be engaged with instructions for the next work order.
+
+We have set up a harness that will keep you running indefinitely until all work orders are complete. Pay close attention to detail and over-verify whenever possible. Do not worry about running out of time or context; anything you do not complete will be covered by a follow-on agent loop. Frequently verify that your work is aligned with and grounded in the requirements and blueprints.
+
+For experimenting with and acceptance testing user interfaces, use the Cursor Browser.
+
+For experimenting with and acceptance testing command-line interfaces, use bash.
+
+For experimenting with and acceptance testing continuous integration, use the gh CLI.
