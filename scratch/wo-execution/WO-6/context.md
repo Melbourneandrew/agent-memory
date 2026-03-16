@@ -24,4 +24,4 @@
 ## Delivery
 
 - Branch: feat/wo-6-cli-config-commands
-- Pull Request URL:
+- Pull Request URL: https://github.com/Melbourneandrew/agent-memory/pull/10
