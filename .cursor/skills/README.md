@@ -8,4 +8,4 @@ Contributors should follow these guides before opening a pull request:
 - `review/SKILL.md`
 - `building/SKILL.md`
 
-These skill files now include CLI package conventions and should be updated periodically as new CLI development patterns emerge.
+These skill files include both CLI and Web UI conventions and should be updated periodically as new package-specific patterns emerge.

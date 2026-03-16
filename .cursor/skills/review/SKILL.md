@@ -32,6 +32,14 @@
 - Check command help and version paths remain stable for automation tooling.
 - Validate integration tests cover happy path plus at least one error path per new command.
 
+## Web UI Review Additions
+
+- Verify Server vs Client Component boundaries are intentional and minimized.
+- Confirm API keys and sensitive config values are only read server-side.
+- Ensure Server Actions enforce validation/auth checks and return actionable errors.
+- Validate shadcn/ui primitives are used consistently for forms, feedback, and layout.
+- Check loading/error/empty states exist for each data-fetching route.
+
 ## Maintenance
 
-- Update this guide as CLI command structure and review standards evolve.
+- Update this guide as CLI and Web UI review standards evolve.

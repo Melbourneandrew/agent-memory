@@ -36,6 +36,14 @@
 - Preserve shebang in CLI entrypoint (`#!/usr/bin/env node`) for global installs.
 - Keep command parsing thin; business logic should stay in `@agent-memory/core`.
 
+## Web UI Building Conventions
+
+- Use Next.js App Router with Server Components by default; introduce Client Components only for browser interactivity.
+- Keep Backboard and configuration access behind server-only modules (for example `lib/server/*` plus `server-only` guards).
+- Use shadcn/ui primitives from `components/ui/` and compose feature UIs in route segments under `app/`.
+- Keep route structure explicit (`app/memories`, `app/config`, nested routes for detail/edit flows).
+- Prefer direct imports over barrel files in performance-sensitive paths.
+
 ## Maintenance
 
-- Update this guide periodically as CLI architecture and packaging conventions mature.
+- Update this guide periodically as CLI and Web UI architecture conventions mature.
