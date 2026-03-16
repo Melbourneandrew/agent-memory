@@ -41,7 +41,9 @@ export interface BackboardSdkClient {
   searchMemories(assistantId: string, query: string, limit?: number): Promise<unknown>;
   getMemory(assistantId: string, memoryId: string): Promise<unknown>;
   getMemories(
-    assistantId: string
+    assistantId: string,
+    page?: number,
+    pageSize?: number
   ): Promise<{ memories?: unknown[]; totalCount?: number } | unknown>;
   updateMemory(assistantId: string, memoryId: string, input: AddMemoryInput): Promise<unknown>;
   deleteMemory(assistantId: string, memoryId: string): Promise<unknown>;

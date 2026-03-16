@@ -75,7 +75,6 @@ async function dispatchCommand(
   }
 
   if (command === "search") {
-    requirePositional(commandArgs, "search", "<query>");
     await handlers.search({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
@@ -92,7 +91,6 @@ async function dispatchCommand(
   }
 
   if (command === "update") {
-    requirePositionals(commandArgs, "update", ["<memory-id>", "<content>"]);
     await handlers.update({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
@@ -175,19 +173,6 @@ async function dispatchConfigSubcommand(
 function requirePositional(args: string[], command: string, usage: string): void {
   if (args.length < 1 || args[0].trim().length === 0) {
     throw new CliUsageError(`Missing required argument for \`${command}\`: ${usage}`);
-  }
-}
-
-function requirePositionals(args: string[], command: string, usageItems: string[]): void {
-  if (args.length < usageItems.length) {
-    throw new CliUsageError(
-      `Missing required argument(s) for \`${command}\`: ${usageItems.join(" ")}`
-    );
-  }
-
-  const hasEmptyValue = args.slice(0, usageItems.length).some((value) => value.trim().length === 0);
-  if (hasEmptyValue) {
-    throw new CliUsageError(`Invalid empty argument for \`${command}\`.`);
   }
 }
 

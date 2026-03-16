@@ -72,10 +72,16 @@ export class BackboardClient {
     });
   }
 
-  public async listMemories(assistantId: string): Promise<SearchMemoryResult> {
+  public async listMemories(
+    assistantId: string,
+    page?: number,
+    pageSize?: number
+  ): Promise<SearchMemoryResult> {
     return this.execute(async () => {
       const client = await this.getClient();
-      const response = (await client.getMemories(assistantId)) as {
+      const response = (await (page !== undefined || pageSize !== undefined
+        ? client.getMemories(assistantId, page, pageSize)
+        : client.getMemories(assistantId))) as {
         memories?: unknown[];
         totalCount?: number;
       };

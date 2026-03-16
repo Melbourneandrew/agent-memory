@@ -12,10 +12,10 @@ const memoryHandlers = createMemoryCommandHandlers();
 
 export const defaultCommandHandlers: CliCommandHandlers = {
   add: memoryHandlers.add,
-  search: notImplementedHandler,
+  search: memoryHandlers.search,
   get: memoryHandlers.get,
-  list: notImplementedHandler,
-  update: notImplementedHandler,
+  list: memoryHandlers.list,
+  update: memoryHandlers.update,
   delete: memoryHandlers.delete,
   configSet: configHandlers.configSet,
   configShow: configHandlers.configShow,
