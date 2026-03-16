@@ -24,4 +24,4 @@
 ## Delivery
 
 - Branch: feat/wo-21-cli-bootstrap
-- Pull Request URL:
+- Pull Request URL: https://github.com/Melbourneandrew/agent-memory/pull/8
