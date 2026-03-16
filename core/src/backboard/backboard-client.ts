@@ -165,6 +165,14 @@ export class BackboardClient {
   }
 
   private async createSdkClient(): Promise<BackboardSdkClient> {
+    if (this.options.sdkFactory) {
+      return this.options.sdkFactory({
+        apiKey: this.apiKey,
+        baseUrl: this.options.baseUrl,
+        timeout: this.options.timeout
+      });
+    }
+
     const sdkModule = await dynamicImportBackboardSdk("backboard-sdk");
     return new sdkModule.BackboardClient({
       apiKey: this.apiKey,

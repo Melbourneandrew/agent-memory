@@ -37,6 +37,29 @@ describe("BackboardClient wrapper", () => {
     expect(sdk.searchMemories).toHaveBeenCalledWith("assistant_1", "world", 5);
     expect(searched.memories[0].relevanceScore).toBe(0.9);
     expect(searched.totalCount).toBe(1);
+
+    sdk.getMemories.mockResolvedValue({
+      memories: [{ id: "mem_3", content: "list", createdAt: "2026-03-16T00:00:00Z" }],
+      totalCount: 1
+    });
+    const listed = await client.listMemories("assistant_1");
+    expect(sdk.getMemories).toHaveBeenCalledWith("assistant_1");
+    expect(listed.memories[0].id).toBe("mem_3");
+
+    sdk.updateMemory.mockResolvedValue({
+      id: "mem_1",
+      content: "updated",
+      createdAt: "2026-03-16T00:00:00Z",
+      updatedAt: "2026-03-17T00:00:00Z"
+    });
+    const updated = await client.updateMemory("assistant_1", "mem_1", { content: "updated" });
+    expect(sdk.updateMemory).toHaveBeenCalledWith("assistant_1", "mem_1", { content: "updated" });
+    expect(updated.updatedAt).toBe("2026-03-17T00:00:00Z");
+
+    sdk.deleteMemory.mockResolvedValue({ operationId: "op_del_1" });
+    const deleted = await client.deleteMemory("assistant_1", "mem_1");
+    expect(sdk.deleteMemory).toHaveBeenCalledWith("assistant_1", "mem_1");
+    expect(deleted).toEqual({ deleted: true, operationId: "op_del_1" });
   });
 
   it("maps createAssistant and system calls", async () => {
@@ -90,6 +113,27 @@ describe("BackboardClient wrapper", () => {
     });
   });
 
+  it("extracts backboardCode from response payload when available", async () => {
+    const sdk = createMockSdkClient();
+    const error = {
+      name: "BackboardAPIError",
+      message: "Request failed",
+      statusCode: 400,
+      response: {
+        clone: () => ({
+          json: async () => ({ error: { code: "invalid_input" } })
+        })
+      }
+    };
+    sdk.addMemory.mockRejectedValue(error);
+
+    const client = new BackboardClient("api-key", { sdkClient: sdk });
+    await expect(client.addMemory("assistant_1", { content: "hello" })).rejects.toMatchObject({
+      backboardCode: "invalid_input",
+      retryable: false
+    });
+  });
+
   it("normalizes network errors as retryable", async () => {
     const sdk = createMockSdkClient();
     const networkError = Object.assign(new Error("fetch failed"), { name: "TypeError" });
@@ -110,6 +154,29 @@ describe("BackboardClient wrapper", () => {
     await expect(client.getMemory("assistant_1", "mem_1")).rejects.toMatchObject({
       name: "BackboardError",
       message: "plain string error"
+    });
+  });
+
+  it("initializes sdk client with API key and options", async () => {
+    const sdk = createMockSdkClient();
+    sdk.getMemory.mockResolvedValue({
+      id: "mem_10",
+      content: "hello",
+      createdAt: "2026-03-16T00:00:00Z"
+    });
+    const sdkFactory = jest.fn().mockResolvedValue(sdk);
+
+    const client = new BackboardClient("api-key-123", {
+      baseUrl: "https://example.backboard.io",
+      timeout: 10000,
+      sdkFactory
+    });
+    await client.getMemory("assistant_1", "mem_10");
+
+    expect(sdkFactory).toHaveBeenCalledWith({
+      apiKey: "api-key-123",
+      baseUrl: "https://example.backboard.io",
+      timeout: 10000
     });
   });
 });

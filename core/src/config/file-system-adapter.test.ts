@@ -1,4 +1,4 @@
-import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -70,5 +70,16 @@ describe("FileSystemAdapter", () => {
 
     const dirEntries = readdirSync(join(testDir, "atomic"));
     expect(dirEntries).toEqual(["config.json"]);
+  });
+
+  it("applies restrictive permissions on unix-like systems", () => {
+    if (process.platform === "win32") {
+      return;
+    }
+
+    const path = join(testDir, "perms", "config.json");
+    adapter.writeConfiguration(path, { apiKey: "secret", assistantId: null });
+    const mode = statSync(path).mode & 0o777;
+    expect(mode).toBe(0o600);
   });
 });

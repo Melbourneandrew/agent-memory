@@ -75,4 +75,15 @@ describe("ConfigurationWriter", () => {
     expect(stored.api_key).toBeUndefined();
     expect(stored.assistant_id).toBe("seed-assistant");
   });
+
+  it("respects explicit global/local targets", () => {
+    const localPath = adapter.getLocalConfigPath(testDir);
+    const globalResult = writer.write({ apiKey: "global-only" }, "global", testDir);
+    const localResult = writer.write({ apiKey: "local-only" }, "local", testDir);
+
+    expect(globalResult.path).toBe(globalConfigPath);
+    expect(localResult.path).toBe(localPath);
+    expect(existsSync(globalConfigPath)).toBe(true);
+    expect(existsSync(localPath)).toBe(true);
+  });
 });

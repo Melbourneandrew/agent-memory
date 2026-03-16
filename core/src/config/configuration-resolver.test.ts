@@ -73,4 +73,11 @@ describe("ConfigurationResolver", () => {
     const resolved = resolver.resolve({ cwd: testDir, env: {} as NodeJS.ProcessEnv });
     expect(resolved).toEqual({ apiKey: null, assistantId: null });
   });
+
+  it("throws clear error when configuration JSON is invalid", () => {
+    writeFileSync(globalConfigPath, "{invalid-json");
+    expect(() => resolver.resolve({ cwd: testDir, env: {} as NodeJS.ProcessEnv })).toThrow(
+      "Configuration file is invalid JSON"
+    );
+  });
 });

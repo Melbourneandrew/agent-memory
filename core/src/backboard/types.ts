@@ -13,6 +13,11 @@ export interface BackboardClientOptions {
   baseUrl?: string;
   timeout?: number;
   sdkClient?: BackboardSdkClient;
+  sdkFactory?: (options: {
+    apiKey: string;
+    baseUrl?: string;
+    timeout?: number;
+  }) => Promise<BackboardSdkClient>;
 }
 
 export interface AddMemoryInput {

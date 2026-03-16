@@ -72,4 +72,9 @@ describe("ConfigurationReader", () => {
     expect(reader.maskApiKey("abc")).toBe("••••••••");
     expect(reader.maskApiKey(null)).toBe("••••••••");
   });
+
+  it("throws for malformed JSON in selected target file", () => {
+    writeFileSync(globalConfigPath, "{broken");
+    expect(() => reader.read("global", testDir)).toThrow("Configuration file is invalid JSON");
+  });
 });
