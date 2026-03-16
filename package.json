@@ -4,12 +4,13 @@
   "version": "0.1.0",
   "description": "Monorepo for Agent Memory packages.",
   "workspaces": [
-    "core"
+    "core",
+    "cli"
   ],
   "scripts": {
-    "build": "npm run build --workspace @agent-memory/core",
-    "test": "npm run test --workspace @agent-memory/core",
-    "lint": "npm run lint --workspace @agent-memory/core",
-    "format": "npm run format --workspace @agent-memory/core"
+    "build": "npm run build --workspace @agent-memory/core && npm run build --workspace agent-memory",
+    "test": "npm run test --workspace @agent-memory/core && npm run test --workspace agent-memory",
+    "lint": "npm run lint --workspace @agent-memory/core && npm run lint --workspace agent-memory",
+    "format": "npm run format --workspace @agent-memory/core && npm run format --workspace agent-memory"
   }
 }

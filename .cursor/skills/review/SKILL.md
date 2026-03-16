@@ -24,3 +24,14 @@
 - Include a concise summary of what changed and why.
 - Include verification commands and outcomes.
 - Document follow-up risks or deferred tasks clearly.
+
+## CLI Review Additions
+
+- Verify command handlers return deterministic Unix-style exit codes.
+- Confirm errors are actionable, written to stderr, and do not leak secrets.
+- Check command help and version paths remain stable for automation tooling.
+- Validate integration tests cover happy path plus at least one error path per new command.
+
+## Maintenance
+
+- Update this guide as CLI command structure and review standards evolve.
