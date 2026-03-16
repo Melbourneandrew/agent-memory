@@ -8,6 +8,7 @@ on:
       - "docs/**"
       - "mkdocs.yml"
       - ".github/workflows/deploy-docs.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,6 +21,7 @@ concurrency:
 
 jobs:
   build:
+    if: vars.ENABLE_DOCS_DEPLOY == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -49,6 +51,7 @@ jobs:
           path: site
 
   deploy:
+    if: vars.ENABLE_DOCS_DEPLOY == 'true'
     needs: build
     runs-on: ubuntu-latest
     environment:
