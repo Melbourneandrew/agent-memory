@@ -4,12 +4,14 @@
   "version": "0.1.0",
   "description": "Monorepo for Agent Memory packages.",
   "workspaces": [
-    "core"
+    "core",
+    "cli",
+    "nextjs"
   ],
   "scripts": {
-    "build": "npm run build --workspace @agent-memory/core",
-    "test": "npm run test --workspace @agent-memory/core",
-    "lint": "npm run lint --workspace @agent-memory/core",
-    "format": "npm run format --workspace @agent-memory/core"
+    "build": "npm run build --workspace @agent-memory/core && npm run build --workspace agent-memory && npm run build --workspace @agent-memory/nextjs",
+    "test": "npm run test --workspace @agent-memory/core && npm run test --workspace agent-memory && npm run test --workspace @agent-memory/nextjs --if-present",
+    "lint": "npm run lint --workspace @agent-memory/core && npm run lint --workspace agent-memory && npm run lint --workspace @agent-memory/nextjs",
+    "format": "npm run format --workspace @agent-memory/core && npm run format --workspace agent-memory && npm run format --workspace @agent-memory/nextjs --if-present"
   }
 }

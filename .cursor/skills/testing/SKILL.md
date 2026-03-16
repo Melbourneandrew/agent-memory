@@ -25,4 +25,25 @@ Use this guide for all unit and integration tests in this repository.
 ## Execution
 
 - Run `npm run test --workspace @agent-memory/core` for package-level tests.
+- Run `npm run test --workspace agent-memory` for CLI integration tests.
 - Use `npm run test` from repo root before final verification.
+
+## CLI Integration Testing Patterns
+
+- Place CLI integration tests under `cli/tests/integration/` and name as `*.test.ts`.
+- Use shared command harness helpers to execute CLI commands and capture stdout/stderr deterministically.
+- Mock Backboard HTTP traffic with `nock`; do not call real APIs in test runs.
+- Use temporary filesystem fixtures for config path and config file behavior tests.
+- Assert on both exit code and user-visible output (stdout/stderr) for each command flow.
+
+## Web UI Testing Patterns
+
+- Test Server Components with focused rendering assertions and mocked server dependencies.
+- Test Server Actions for validation, success, and failure branches with deterministic inputs.
+- Use React Testing Library for Client Components and user interactions.
+- Keep API-facing tests at the server boundary; mock `@agent-memory/core` integrations rather than browser internals.
+- Cover loading, error, and empty states for each route segment.
+
+## Maintenance
+
+- Update this document whenever new CLI or Web UI testing patterns become stable conventions.

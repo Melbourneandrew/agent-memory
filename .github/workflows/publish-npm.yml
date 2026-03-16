@@ -1,0 +1,54 @@
+name: Publish NPM Package
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test
+
+      - name: Determine publish requirement
+        id: publish_check
+        run: |
+          set -euo pipefail
+          PACKAGE_NAME=$(npm pkg get name --workspace @agent-memory/core | tr -d '"')
+          PACKAGE_VERSION=$(npm pkg get version --workspace @agent-memory/core | tr -d '"')
+
+          if npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version >/dev/null 2>&1; then
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            echo "Package $PACKAGE_NAME@$PACKAGE_VERSION already exists on NPM; skipping publish."
+          else
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+            echo "Package $PACKAGE_NAME@$PACKAGE_VERSION is new; proceeding to publish."
+          fi
+
+      - name: Publish package
+        if: steps.publish_check.outputs.should_publish == 'true'
+        run: npm publish --workspace @agent-memory/core --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

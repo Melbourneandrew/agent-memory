@@ -1,0 +1,39 @@
+{
+  "name": "agent-memory",
+  "version": "0.1.0",
+  "description": "Command-line interface for Agent Memory.",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "agent-memory": "dist/bin.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "jest --runInBand",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"*.{json,js,md}\""
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@agent-memory/core": "file:../core"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.2.0",
+    "nock": "^14.0.10",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.4",
+    "typescript": "^5.9.3"
+  }
+}
