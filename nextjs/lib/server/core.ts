@@ -3,12 +3,16 @@ import "server-only";
 import {
   AssistantInitializer,
   BackboardClient,
+  ConfigurationReader,
+  type ConfigurationTarget,
   ConfigurationResolver,
   ConfigurationWriter,
+  type PartialConfigurationValues,
   type ConfigurationValues
 } from "@agent-memory/core";
 
 const configurationResolver = new ConfigurationResolver();
+const configurationReader = new ConfigurationReader();
 const configurationWriter = new ConfigurationWriter();
 const assistantInitializationByCwd = new Map<
   string,
@@ -19,6 +23,10 @@ export function resolveServerConfiguration(cwd = process.cwd()): ConfigurationVa
   return configurationResolver.resolve({ cwd });
 }
 
+export function readLocalServerConfiguration(cwd = process.cwd()) {
+  return configurationReader.read("local", cwd);
+}
+
 export function createServerBackboardClient(cwd = process.cwd()): BackboardClient {
   const configuration = resolveServerConfiguration(cwd);
   if (!configuration.apiKey) {
@@ -26,6 +34,21 @@ export function createServerBackboardClient(cwd = process.cwd()): BackboardClien
   }
 
   return new BackboardClient(configuration.apiKey);
+}
+
+export function writeServerConfiguration(
+  updates: PartialConfigurationValues,
+  target: ConfigurationTarget = "local",
+  cwd = process.cwd()
+): { path: string; values: ConfigurationValues } {
+  return configurationWriter.write(updates, target, cwd);
+}
+
+export function clearServerConfiguration(
+  target: ConfigurationTarget = "local",
+  cwd = process.cwd()
+): { path: string; deleted: boolean } {
+  return configurationWriter.clear(target, cwd);
 }
 
 export async function ensureServerAssistantId(
