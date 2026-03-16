@@ -1,16 +1,13 @@
-import type { CliCommandHandlers, CommandHandler } from "./types";
-import { CliUsageError } from "../errors";
+import type { CliCommandHandlers } from "./types";
 import { createConfigCommandHandlers } from "./config-command-handlers";
 import { createMemoryCommandHandlers } from "./memory-command-handlers";
 import { createSystemCommandHandlers } from "./system-command-handlers";
-
-const notImplementedHandler: CommandHandler = async ({ command }) => {
-  throw new CliUsageError(`Command \`${command}\` is not implemented yet.`);
-};
+import { createWebCommandHandler } from "./web-command-handler";
 
 const configHandlers = createConfigCommandHandlers();
 const memoryHandlers = createMemoryCommandHandlers();
 const systemHandlers = createSystemCommandHandlers();
+const webHandler = createWebCommandHandler();
 
 export const defaultCommandHandlers: CliCommandHandlers = {
   add: memoryHandlers.add,
@@ -24,5 +21,5 @@ export const defaultCommandHandlers: CliCommandHandlers = {
   configClear: configHandlers.configClear,
   stats: systemHandlers.stats,
   status: systemHandlers.status,
-  web: notImplementedHandler
+  web: webHandler.web
 };
