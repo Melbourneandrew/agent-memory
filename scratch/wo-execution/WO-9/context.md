@@ -23,6 +23,5 @@
 
 ## Delivery
 
-- Branch:
 - Branch: feat/wo-9-cli-system-operations
-- Pull Request URL:
+- Pull Request URL: https://github.com/Melbourneandrew/agent-memory/pull/13
