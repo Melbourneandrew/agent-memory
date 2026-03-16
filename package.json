@@ -1,0 +1,15 @@
+{
+  "name": "agent-memory-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo for Agent Memory packages.",
+  "workspaces": [
+    "core"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @agent-memory/core",
+    "test": "npm run test --workspace @agent-memory/core",
+    "lint": "npm run lint --workspace @agent-memory/core",
+    "format": "npm run format --workspace @agent-memory/core"
+  }
+}
