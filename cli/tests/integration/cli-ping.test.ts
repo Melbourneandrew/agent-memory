@@ -1,54 +1,102 @@
-import nock from "nock";
+import { BackboardError } from "@agent-memory/core";
 
 import { executeCliCommand } from "./helpers/command-harness";
 
-describe("CLI ping command", () => {
-  beforeEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.cleanAll();
-    nock.restore();
-  });
-
-  test("returns success with mocked API status", async () => {
-    nock("https://api.backboard.dev").get("/health").reply(200, { ok: true });
-
-    const result = await executeCliCommand(["ping"]);
+describe("CLI command routing and errors", () => {
+  test("routes memory command handlers", async () => {
+    const result = await executeCliCommand(["add", "hello"], {
+      handlers: {
+        add: async ({ writeStdout }) => {
+          writeStdout("add handled\n");
+        },
+        search: async () => undefined,
+        get: async () => undefined,
+        list: async () => undefined,
+        update: async () => undefined,
+        delete: async () => undefined,
+        configSet: async () => undefined,
+        configShow: async () => undefined,
+        configClear: async () => undefined,
+        stats: async () => undefined,
+        status: async () => undefined,
+        web: async () => undefined
+      }
+    });
 
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("Backboard connectivity OK (200)");
+    expect(result.stdout).toContain("add handled");
     expect(result.stderr).toBe("");
   });
 
-  test("returns network exit code when endpoint is unavailable", async () => {
-    nock("https://api.backboard.dev")
-      .get("/health")
-      .replyWithError(new Error("simulated network outage"));
-
-    const result = await executeCliCommand(["ping"]);
-
-    expect(result.exitCode).toBe(3);
-    expect(result.stdout).toBe("");
-    expect(result.stderr).toContain("Backboard connectivity failed");
-  });
-
-  test("returns network exit code for non-2xx HTTP response", async () => {
-    nock("https://api.backboard.dev").get("/health").reply(503, { ok: false });
-
-    const result = await executeCliCommand(["ping"]);
-
-    expect(result.exitCode).toBe(3);
-    expect(result.stdout).toBe("");
-    expect(result.stderr).toContain("Backboard connectivity failed: HTTP 503");
-  });
-
-  test("returns validation error when --endpoint value is missing", async () => {
-    const result = await executeCliCommand(["ping", "--endpoint"]);
+  test("returns usage error when command is unknown", async () => {
+    const result = await executeCliCommand(["not-a-command"]);
 
     expect(result.exitCode).toBe(1);
     expect(result.stdout).toBe("");
-    expect(result.stderr).toContain("Missing value for --endpoint.");
+    expect(result.stderr).toContain("Unknown command");
+  });
+
+  test("rejects unexpected arguments for zero-arg commands", async () => {
+    const result = await executeCliCommand(["stats", "extra-arg"]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toBe("");
+    expect(result.stderr).toContain("Unexpected argument(s) for `stats`.");
+  });
+
+  test("maps BackboardError to exit code 2", async () => {
+    const result = await executeCliCommand(["status"], {
+      handlers: {
+        add: async () => undefined,
+        search: async () => undefined,
+        get: async () => undefined,
+        list: async () => undefined,
+        update: async () => undefined,
+        delete: async () => undefined,
+        configSet: async () => undefined,
+        configShow: async () => undefined,
+        configClear: async () => undefined,
+        stats: async () => undefined,
+        status: async () => {
+          throw new BackboardError({
+            message: "API rejected request.",
+            statusCode: 401,
+            retryable: false
+          });
+        },
+        web: async () => undefined
+      }
+    });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stdout).toBe("");
+    expect(result.stderr).toContain("API rejected request.");
+  });
+
+  test("maps network error to exit code 3", async () => {
+    const result = await executeCliCommand(["stats"], {
+      handlers: {
+        add: async () => undefined,
+        search: async () => undefined,
+        get: async () => undefined,
+        list: async () => undefined,
+        update: async () => undefined,
+        delete: async () => undefined,
+        configSet: async () => undefined,
+        configShow: async () => undefined,
+        configClear: async () => undefined,
+        stats: async () => {
+          const networkError = new TypeError("fetch failed");
+          networkError.name = "TypeError";
+          throw networkError;
+        },
+        status: async () => undefined,
+        web: async () => undefined
+      }
+    });
+
+    expect(result.exitCode).toBe(3);
+    expect(result.stdout).toBe("");
+    expect(result.stderr).toContain("fetch failed");
   });
 });

@@ -1,2 +1,3 @@
 export * from "./help-text";
-export * from "./ping-command";
+export * from "./types";
+export * from "./default-handlers";

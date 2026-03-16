@@ -1,27 +1,52 @@
-import { join } from "node:path";
-
 import { executeCliCommand } from "./helpers/command-harness";
-import { createMockFileSystem } from "./helpers/mock-file-system";
 
-describe("CLI config-path command", () => {
-  test("prints local and global config paths derived from runtime context", async () => {
-    const mockFs = createMockFileSystem();
-    const cwd = join(mockFs.root, "project");
+describe("CLI config command parsing", () => {
+  test("fails when config subcommand is missing", async () => {
+    const result = await executeCliCommand(["config"]);
 
-    try {
-      const result = await executeCliCommand(["config-path"], {
-        cwd,
-        env: mockFs.env
-      });
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toBe("");
+    expect(result.stderr).toContain("Missing config subcommand");
+  });
 
-      expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain(`local: ${join(cwd, ".agent-memory", "config.json")}`);
-      expect(result.stdout).toContain(
-        `global: ${join(mockFs.env.XDG_CONFIG_HOME as string, "agent-memory", "config.json")}`
-      );
-      expect(result.stderr).toBe("");
-    } finally {
-      mockFs.cleanup();
-    }
+  test("fails when config set is missing required values", async () => {
+    const result = await executeCliCommand(["config", "set", "api-key"]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toBe("");
+    expect(result.stderr).toContain("Missing required argument(s) for `config set`");
+  });
+
+  test("routes config show to handler", async () => {
+    const result = await executeCliCommand(["config", "show"], {
+      handlers: {
+        add: async () => undefined,
+        search: async () => undefined,
+        get: async () => undefined,
+        list: async () => undefined,
+        update: async () => undefined,
+        delete: async () => undefined,
+        configSet: async () => undefined,
+        configShow: async ({ writeStdout }) => {
+          writeStdout("config shown\n");
+        },
+        configClear: async () => undefined,
+        stats: async () => undefined,
+        status: async () => undefined,
+        web: async () => undefined
+      }
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("config shown");
+    expect(result.stderr).toBe("");
+  });
+
+  test("rejects unexpected arguments for config show", async () => {
+    const result = await executeCliCommand(["config", "show", "extra"]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toBe("");
+    expect(result.stderr).toContain("Unexpected argument(s) for `config show`.");
   });
 });

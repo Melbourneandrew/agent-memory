@@ -1,5 +1,6 @@
 import { PassThrough } from "node:stream";
 
+import type { CliCommandHandlers } from "../../../src/commands";
 import { runCli } from "../../../src/cli";
 
 interface CliExecutionResult {
@@ -11,8 +12,7 @@ interface CliExecutionResult {
 export async function executeCliCommand(
   args: string[],
   options?: {
-    cwd?: string;
-    env?: NodeJS.ProcessEnv;
+    handlers?: CliCommandHandlers;
   }
 ): Promise<CliExecutionResult> {
   const stdout = new PassThrough();
@@ -23,12 +23,14 @@ export async function executeCliCommand(
   stdout.on("data", (chunk: Buffer) => stdoutChunks.push(chunk));
   stderr.on("data", (chunk: Buffer) => stderrChunks.push(chunk));
 
-  const exitCode = await runCli(args, {
-    stdout: stdout as unknown as NodeJS.WriteStream,
-    stderr: stderr as unknown as NodeJS.WriteStream,
-    cwd: options?.cwd ?? process.cwd(),
-    env: options?.env ?? process.env
-  });
+  const exitCode = await runCli(
+    args,
+    {
+      stdout: stdout as unknown as NodeJS.WriteStream,
+      stderr: stderr as unknown as NodeJS.WriteStream
+    },
+    options?.handlers
+  );
 
   stdout.end();
   stderr.end();
