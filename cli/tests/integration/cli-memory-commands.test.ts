@@ -52,6 +52,28 @@ describe("CLI memory command handlers", () => {
     expect(ensureCalls).toBe(0);
   });
 
+  test("auto-creates assistant for add and persists assistant id", async () => {
+    let writes: Array<{ assistantId?: string | null; target: "global" | "local" | "auto"; cwd: string }> = [];
+    const handlers = createHandlers({
+      resolverValues: { apiKey: "sk_test", assistantId: null },
+      ensureAssistantId: async () => "asst_created_1",
+      writerWrite: (updates, target, cwd) => {
+        writes = [...writes, { assistantId: updates.assistantId, target, cwd }];
+      }
+    });
+
+    const result = await executeCliCommand(["add", "new memory"], { handlers });
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("ID: mem_default");
+    expect(writes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          assistantId: "asst_created_1"
+        })
+      ])
+    );
+  });
+
   test("searches memories with limit", async () => {
     const handlers = createHandlers({
       resolverValues: { apiKey: "sk_test", assistantId: "asst_1" },
@@ -225,6 +247,28 @@ describe("CLI memory command handlers", () => {
     expect(result.stdout).toContain("\"id\": \"mem_1\"");
   });
 
+  test("deletes memory and prints confirmation", async () => {
+    const handlers = createHandlers({
+      resolverValues: { apiKey: "sk_test", assistantId: "asst_1" }
+    });
+
+    const result = await executeCliCommand(["delete", "mem_1"], { handlers });
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Memory deleted successfully");
+  });
+
+  test("returns delete response in JSON format", async () => {
+    const handlers = createHandlers({
+      resolverValues: { apiKey: "sk_test", assistantId: "asst_1" },
+      deleteMemory: async () => ({ deleted: true, operationId: "op_123" })
+    });
+
+    const result = await executeCliCommand(["delete", "mem_1", "--format", "json"], { handlers });
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("\"deleted\": true");
+    expect(result.stdout).toContain("\"operationId\": \"op_123\"");
+  });
+
   test("errors when assistant id is missing for search/list/update", async () => {
     const handlers = createHandlers({
       resolverValues: { apiKey: "sk_test", assistantId: null }
@@ -257,6 +301,38 @@ describe("CLI memory command handlers", () => {
     expect(search.exitCode).toBe(2);
     expect(list.exitCode).toBe(2);
     expect(update.exitCode).toBe(2);
+  });
+
+  test("reports authentication failures from Backboard API", async () => {
+    const handlers = createHandlers({
+      resolverValues: { apiKey: "sk_test", assistantId: "asst_1" },
+      getMemory: async () => {
+        throw new BackboardError({
+          message: "Authentication failed: invalid API key.",
+          statusCode: 401,
+          retryable: false
+        });
+      }
+    });
+
+    const result = await executeCliCommand(["get", "mem_unauthorized"], { handlers });
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("Authentication failed");
+  });
+
+  test("maps network failures to exit code 3", async () => {
+    const handlers = createHandlers({
+      resolverValues: { apiKey: "sk_test", assistantId: "asst_1" },
+      searchMemory: async () => {
+        const error = new TypeError("network timeout");
+        error.name = "TypeError";
+        throw error;
+      }
+    });
+
+    const result = await executeCliCommand(["search", "query"], { handlers });
+    expect(result.exitCode).toBe(3);
+    expect(result.stderr).toContain("network timeout");
   });
 });
 

@@ -112,6 +112,38 @@ describe("CLI system command handlers", () => {
     expect(status.exitCode).toBe(2);
   });
 
+  test("reports authentication failures with exit code 2", async () => {
+    const handlers = createHandlers({
+      resolverValues: { apiKey: "sk_test", assistantId: "asst_1" },
+      getOperationStatus: async () => {
+        throw new BackboardError({
+          message: "Authentication failed: invalid credentials.",
+          statusCode: 401,
+          retryable: false
+        });
+      }
+    });
+
+    const result = await executeCliCommand(["status", "op_auth_fail"], { handlers });
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("Authentication failed");
+  });
+
+  test("maps network failures to exit code 3", async () => {
+    const handlers = createHandlers({
+      resolverValues: { apiKey: "sk_test", assistantId: "asst_1" },
+      getStats: async () => {
+        const error = new TypeError("fetch timeout");
+        error.name = "TypeError";
+        throw error;
+      }
+    });
+
+    const result = await executeCliCommand(["stats"], { handlers });
+    expect(result.exitCode).toBe(3);
+    expect(result.stderr).toContain("fetch timeout");
+  });
+
   test("rejects unknown flags and missing/invalid format values", async () => {
     const handlers = createHandlers({
       resolverValues: { apiKey: "sk_test", assistantId: "asst_1" }
