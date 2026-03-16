@@ -22,5 +22,5 @@
 
 ## Delivery
 
-- Branch: main
-- Pull Request URL:
+- Branch: feat/wo-20-core-bootstrap
+- Pull Request URL: https://github.com/Melbourneandrew/agent-memory/pull/1
