@@ -5,7 +5,7 @@ Global flags:
   --version, -v      Show CLI version
 
 Commands:
-  add <content>                  Add a memory
+  add [content]                  Add a memory (or read from stdin)
   search <query>                 Search memories
   get <memory-id>                Get a memory by ID
   list [--page <n>]              List memories

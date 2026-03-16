@@ -70,7 +70,6 @@ async function dispatchCommand(
   }
 
   if (command === "add") {
-    requirePositional(commandArgs, "add", "<content>");
     await handlers.add({ command, args: commandArgs, cwd, writeStdout, writeStderr });
     return;
   }
