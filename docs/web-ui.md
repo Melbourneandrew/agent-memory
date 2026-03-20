@@ -22,7 +22,7 @@ agent-memory web --port 3000
 
 ## Configuration Behavior
 
-The Web UI uses the same configuration sources as the CLI:
+The Web UI uses the same configuration sources as the CLI to talk to [Backboard](https://backboard.io):
 
 - API key
 - assistant ID (memory bank ID)

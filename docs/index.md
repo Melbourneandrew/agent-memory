@@ -1,6 +1,6 @@
 # Agent Memory
 
-Agent Memory is a command-line interface and local web UI for persistent memory workflows backed by Backboard.
+Agent Memory is a command-line interface and local web UI for persistent memory workflows backed by [Backboard](https://backboard.io).
 
 ## Why Agent Memory
 

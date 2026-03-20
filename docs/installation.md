@@ -31,4 +31,4 @@ Expected output is a semantic version string, for example:
 
 ## Next Step
 
-After installation, continue to [Configuration](configuration.md) to set your Backboard API key and assistant ID behavior.
+After installation, continue to [Configuration](configuration.md) to set your [Backboard](https://backboard.io) API key and assistant ID behavior.

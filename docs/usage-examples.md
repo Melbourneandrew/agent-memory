@@ -1,5 +1,7 @@
 # Usage Examples
 
+These examples assume you have configured a [Backboard](https://backboard.io) API key (see [Configuration](configuration.md)).
+
 ## Add Memories
 
 From command argument:

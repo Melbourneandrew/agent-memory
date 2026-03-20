@@ -4,9 +4,7 @@ Agent Memory uses the same configuration model across the CLI and Web UI.
 
 ## API Key
 
-Get a Backboard API key from the Backboard platform docs:
-
-- [Backboard Documentation](https://docs.backboard.com)
+Get a Backboard API key from [Backboard](https://backboard.io) (see [Backboard documentation](https://docs.backboard.com) for API keys and setup).
 
 Set the API key:
 
@@ -16,7 +14,7 @@ agent-memory config set api-key <your-api-key>
 
 ## Assistant ID (Memory Bank ID)
 
-Assistant ID is the Backboard assistant identifier used to group memories in a single memory bank.
+Assistant ID is the [Backboard](https://backboard.io) assistant identifier used to group memories in a single memory bank.
 
 You can set it explicitly:
 

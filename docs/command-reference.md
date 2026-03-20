@@ -1,5 +1,7 @@
 # Command Reference
 
+Memory and system commands call the [Backboard](https://backboard.io) API using your configured API key. See [Configuration](configuration.md) and [Backboard documentation](https://docs.backboard.com) for setup details.
+
 ## Global Flags
 
 - `--help`, `-h` - show help information
