@@ -24,8 +24,8 @@ Use this guide for all unit and integration tests in this repository.
 
 ## Execution
 
-- Run `npm run test --workspace @agent-memory/core` for package-level tests.
-- Run `npm run test --workspace agent-memory` for CLI integration tests.
+- Run `npm run test --workspace @agent-memory-cli/core` for package-level tests.
+- Run `npm run test --workspace agent-memory-cli` for CLI integration tests.
 - Use `npm run test` from repo root before final verification.
 
 ## CLI Integration Testing Patterns
@@ -41,7 +41,7 @@ Use this guide for all unit and integration tests in this repository.
 - Test Server Components with focused rendering assertions and mocked server dependencies.
 - Test Server Actions for validation, success, and failure branches with deterministic inputs.
 - Use React Testing Library for Client Components and user interactions.
-- Keep API-facing tests at the server boundary; mock `@agent-memory/core` integrations rather than browser internals.
+- Keep API-facing tests at the server boundary; mock `@agent-memory-cli/core` integrations rather than browser internals.
 - Cover loading, error, and empty states for each route segment.
 
 ## Maintenance

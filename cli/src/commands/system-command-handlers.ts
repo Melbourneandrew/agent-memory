@@ -1,7 +1,4 @@
-import {
-  BackboardClient,
-  ConfigurationResolver
-} from "@agent-memory/core";
+import { BackboardClient, ConfigurationResolver } from "@agent-memory-cli/core";
 import type { MemoryOperationStatus, MemoryStats } from "backboard-sdk";
 
 import { CliUsageError } from "../errors";
@@ -11,10 +8,9 @@ type OutputFormat = "plain" | "json";
 
 interface SystemCommandHandlerDependencies {
   readonly configurationResolver: ConfigurationResolver;
-  readonly createBackboardClient: (apiKey: string) => Pick<
-    BackboardClient,
-    "getStats" | "getOperationStatus"
-  >;
+  readonly createBackboardClient: (
+    apiKey: string
+  ) => Pick<BackboardClient, "getStats" | "getOperationStatus">;
 }
 
 const defaultDependencies: SystemCommandHandlerDependencies = {
@@ -105,7 +101,10 @@ const statusHandler = async (
   writeStatusDetails(writeStdout, status);
 };
 
-function parseFormatAndPositionals(args: string[]): { positionals: string[]; format: OutputFormat } {
+function parseFormatAndPositionals(args: string[]): {
+  positionals: string[];
+  format: OutputFormat;
+} {
   let format: OutputFormat = "plain";
   const positionals: string[] = [];
 

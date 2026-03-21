@@ -2,12 +2,21 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const nextjsRoot = join(__dirname, "../..");
-const forbiddenImports = ["@/lib/server/core", "@agent-memory/core", "server-only", "lib/server/core"];
+const forbiddenImports = [
+  "@/lib/server/core",
+  "@agent-memory-cli/core",
+  "server-only",
+  "lib/server/core",
+];
 
 describe("server-only boundaries", () => {
   test("client modules do not import server-only APIs", () => {
-    const files = collectSourceFiles(join(nextjsRoot, "app")).concat(collectSourceFiles(join(nextjsRoot, "components")));
-    const clientFiles = files.filter((path) => isClientModule(readFileSync(path, "utf-8")));
+    const files = collectSourceFiles(join(nextjsRoot, "app")).concat(
+      collectSourceFiles(join(nextjsRoot, "components")),
+    );
+    const clientFiles = files.filter((path) =>
+      isClientModule(readFileSync(path, "utf-8")),
+    );
 
     for (const filePath of clientFiles) {
       const source = readFileSync(filePath, "utf-8");
@@ -18,7 +27,10 @@ describe("server-only boundaries", () => {
   });
 
   test("server core entry remains server-only", () => {
-    const source = readFileSync(join(nextjsRoot, "lib/server/core.ts"), "utf-8");
+    const source = readFileSync(
+      join(nextjsRoot, "lib/server/core.ts"),
+      "utf-8",
+    );
     expect(source).toContain('import "server-only";');
   });
 });
@@ -53,7 +65,7 @@ function containsImportReference(source: string, target: string): boolean {
   const patterns = [
     new RegExp(`from\\s+["']${escaped}["']`),
     new RegExp(`import\\s+["']${escaped}["']`),
-    new RegExp(`import\\(\\s*["']${escaped}["']\\s*\\)`)
+    new RegExp(`import\\(\\s*["']${escaped}["']\\s*\\)`),
   ];
   return patterns.some((pattern) => pattern.test(source));
 }

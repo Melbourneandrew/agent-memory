@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { createServer } from "node:net";
 import { join, resolve } from "node:path";
 
-import { ConfigurationResolver } from "@agent-memory/core";
+import { ConfigurationResolver } from "@agent-memory-cli/core";
 
 import { CliUsageError } from "../errors";
 import type { CliCommandHandlers, CommandHandler } from "./types";
@@ -74,10 +74,14 @@ async function webHandler(
   const portStatus = await dependencies.checkPortAvailability(port);
   if (!portStatus.available) {
     if (portStatus.errorCode === "EADDRINUSE") {
-      throw new CliUsageError(`Port ${port} is already in use. Try \`agent-memory web --port <n>\`.`);
+      throw new CliUsageError(
+        `Port ${port} is already in use. Try \`agent-memory web --port <n>\`.`
+      );
     }
     if (portStatus.errorCode === "EACCES") {
-      throw new CliUsageError(`Permission denied when binding port ${port}. Try a higher port such as 8090.`);
+      throw new CliUsageError(
+        `Permission denied when binding port ${port}. Try a higher port such as 8090.`
+      );
     }
     if (portStatus.errorCode === "EADDRNOTAVAIL") {
       throw new CliUsageError(`Address 127.0.0.1 is not available on this machine.`);

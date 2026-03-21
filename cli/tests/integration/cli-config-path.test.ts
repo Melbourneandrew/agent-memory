@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { FileSystemAdapter } from "@agent-memory/core";
+import { FileSystemAdapter } from "@agent-memory-cli/core";
 
 import { createConfigCommandHandlers, type CliCommandHandlers } from "../../src/commands";
 import { executeCliCommand } from "./helpers/command-harness";
@@ -31,7 +31,7 @@ describe("CLI config command handlers", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain(`Saved api-key to ${globalPath}`);
-    expect(readFileSync(globalPath, "utf-8")).toContain("\"api_key\": \"sk-test-1234\"");
+    expect(readFileSync(globalPath, "utf-8")).toContain('"api_key": "sk-test-1234"');
   });
 
   test("writes assistant id to local config with --local and shows masked key", async () => {
@@ -87,7 +87,7 @@ describe("CLI config command handlers", () => {
     expect(showDefault.exitCode).toBe(0);
     expect(showDefault.stdout).toContain("Source: local");
     expect(showDefault.stdout).toContain("assistant-id: asst_local_default");
-    expect(readFileSync(localPath, "utf-8")).toContain("\"assistant_id\": \"asst_local_default\"");
+    expect(readFileSync(localPath, "utf-8")).toContain('"assistant_id": "asst_local_default"');
     expect(existsSync(globalPath)).toBe(false);
   });
 
@@ -125,7 +125,7 @@ describe("CLI config command handlers", () => {
     expect(showLocal.exitCode).toBe(0);
     expect(showLocal.stdout).toContain("Source: local");
     expect(showLocal.stdout).not.toContain("asst_global_override");
-    expect(readFileSync(globalPath, "utf-8")).toContain("\"assistant_id\": \"asst_global_override\"");
+    expect(readFileSync(globalPath, "utf-8")).toContain('"assistant_id": "asst_global_override"');
     expect(existsSync(localPath)).toBe(true);
   });
 
@@ -198,10 +198,10 @@ describe("CLI config command handlers", () => {
       cwd: projectCwd,
       handlers
     });
-    const conflictingFlags = await executeCliCommand(
-      ["config", "show", "--global", "--local"],
-      { cwd: projectCwd, handlers }
-    );
+    const conflictingFlags = await executeCliCommand(["config", "show", "--global", "--local"], {
+      cwd: projectCwd,
+      handlers
+    });
 
     expect(missingSubcommand.exitCode).toBe(1);
     expect(missingSubcommand.stderr).toContain("Missing config subcommand");

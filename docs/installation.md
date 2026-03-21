@@ -14,7 +14,7 @@ node --version
 ## Install the CLI
 
 ```bash
-npm install -g agent-memory
+npm install -g agent-memory-cli
 ```
 
 ## Verify Installation

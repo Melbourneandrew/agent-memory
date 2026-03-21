@@ -1,5 +1,5 @@
 {
-  "name": "agent-memory",
+  "name": "agent-memory-cli",
   "version": "0.1.0",
   "description": "Command-line interface for Agent Memory.",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@agent-memory/core": "file:../core"
+    "@agent-memory-cli/core": "0.1.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

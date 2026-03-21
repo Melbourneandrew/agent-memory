@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { BackboardError } from "@agent-memory/core";
+import { BackboardError } from "@agent-memory-cli/core";
 
 import { defaultCommandHandlers, type CliCommandHandlers, HELP_TEXT } from "./commands";
 import { CliUsageError } from "./errors";
@@ -116,7 +116,9 @@ async function dispatchCommand(
     return;
   }
 
-  throw new CliUsageError(`Unknown command: ${command}\nRun \`agent-memory --help\` for available commands.`);
+  throw new CliUsageError(
+    `Unknown command: ${command}\nRun \`agent-memory --help\` for available commands.`
+  );
 }
 
 async function dispatchConfigSubcommand(

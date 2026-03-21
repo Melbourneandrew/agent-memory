@@ -1,4 +1,4 @@
-# @agent-memory/core
+# @agent-memory-cli/core
 
 Shared TypeScript core library for Agent Memory runtime behavior.
 

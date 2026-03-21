@@ -1,4 +1,4 @@
-# agent-memory CLI
+# agent-memory-cli
 
 TypeScript CLI package for Agent Memory.
 
@@ -23,9 +23,9 @@ From repository root:
 
 ```bash
 npm install
-npm run build --workspace agent-memory
-npm run test --workspace agent-memory
-npm run lint --workspace agent-memory
+npm run build --workspace agent-memory-cli
+npm run test --workspace agent-memory-cli
+npm run lint --workspace agent-memory-cli
 ```
 
 ## Integration testing approach

@@ -3,7 +3,7 @@ import {
   BackboardClient,
   ConfigurationResolver,
   ConfigurationWriter
-} from "@agent-memory/core";
+} from "@agent-memory-cli/core";
 
 import { CliUsageError } from "../errors";
 import type { CliCommandHandlers, CommandHandler } from "./types";
@@ -13,7 +13,9 @@ type OutputFormat = "plain" | "json";
 interface MemoryCommandHandlerDependencies {
   readonly configurationResolver: ConfigurationResolver;
   readonly configurationWriter: ConfigurationWriter;
-  readonly createBackboardClient: (apiKey: string) => Pick<
+  readonly createBackboardClient: (
+    apiKey: string
+  ) => Pick<
     BackboardClient,
     | "addMemory"
     | "searchMemory"
@@ -153,7 +155,12 @@ const listMemoriesHandler = async (
   if (parsed.format === "json") {
     writeStdout(
       `${JSON.stringify(
-        { page: parsed.page, pageSize: parsed.pageSize, totalCount: result.totalCount, memories: result.memories },
+        {
+          page: parsed.page,
+          pageSize: parsed.pageSize,
+          totalCount: result.totalCount,
+          memories: result.memories
+        },
         null,
         2
       )}\n`
@@ -242,7 +249,10 @@ const deleteMemoryHandler = async (
   }
 };
 
-function parseFormatAndPositionals(args: string[]): { positionals: string[]; format: OutputFormat } {
+function parseFormatAndPositionals(args: string[]): {
+  positionals: string[];
+  format: OutputFormat;
+} {
   let format: OutputFormat = "plain";
   const positionals: string[] = [];
 
@@ -352,7 +362,9 @@ function parseListArgs(args: string[]): { page: number; pageSize: number; format
       throw new CliUsageError(`Unknown flag: ${arg}`);
     }
 
-    throw new CliUsageError("Usage: agent-memory list [--page <n>] [--page-size <n>] [--format json]");
+    throw new CliUsageError(
+      "Usage: agent-memory list [--page <n>] [--page-size <n>] [--format json]"
+    );
   }
 
   return { page, pageSize, format };

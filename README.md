@@ -2,10 +2,10 @@
 
 **Remember things for your AI assistant** — save notes, search them later, and keep context across sessions. Works from the terminal or in your browser, backed by [Backboard](https://backboard.io).
 
-[![npm](https://img.shields.io/npm/v/agent-memory?style=flat-square&logo=npm&label=CLI)](https://www.npmjs.com/package/agent-memory)
-[![core on npm](https://img.shields.io/npm/v/@agent-memory/core?style=flat-square&logo=npm&label=core)](https://www.npmjs.com/package/@agent-memory/core)
+[![npm](https://img.shields.io/npm/v/agent-memory-cli?style=flat-square&logo=npm&label=CLI)](https://www.npmjs.com/package/agent-memory-cli)
+[![core on npm](https://img.shields.io/npm/v/@agent-memory-cli%2Fcore?style=flat-square&logo=npm&label=core)](https://www.npmjs.com/package/@agent-memory-cli/core)
 [![License](https://img.shields.io/badge/license-MIT-555?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Node](https://img.shields.io/node/v/agent-memory?style=flat-square&logo=nodedotjs&label=Node)](https://nodejs.org/)
+[![Node](https://img.shields.io/node/v/agent-memory-cli?style=flat-square&logo=nodedotjs&label=Node)](https://nodejs.org/)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-222?style=flat-square&logo=github)](https://melbourneandrew.github.io/agent-memory/)
 [![CI](https://img.shields.io/github/actions/workflow/status/Melbourneandrew/agent-memory/pr-validation.yml?branch=main&style=flat-square&logo=github&label=CI)](https://github.com/Melbourneandrew/agent-memory/actions)
 

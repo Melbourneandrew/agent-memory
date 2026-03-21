@@ -1,17 +1,28 @@
-import { BackboardError } from "@agent-memory/core";
+import { BackboardError } from "@agent-memory-cli/core";
 import { notFound } from "next/navigation";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { formatTimestamp } from "@/lib/memory-utils";
-import { createServerBackboardClient, resolveServerConfiguration } from "@/lib/server/core";
+import {
+  createServerBackboardClient,
+  resolveServerConfiguration,
+} from "@/lib/server/core";
 
 interface MemoryDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function MemoryDetailPage({ params }: MemoryDetailPageProps) {
+export default async function MemoryDetailPage({
+  params,
+}: MemoryDetailPageProps) {
   const { id } = await params;
 
   const configuration = resolveServerConfiguration();
@@ -20,8 +31,8 @@ export default async function MemoryDetailPage({ params }: MemoryDetailPageProps
       <Alert>
         <AlertTitle>API key required</AlertTitle>
         <AlertDescription>
-          Run <code>agent-memory config set api-key &lt;your-api-key&gt;</code> in your terminal,
-          then reload this page.
+          Run <code>agent-memory config set api-key &lt;your-api-key&gt;</code>{" "}
+          in your terminal, then reload this page.
         </AlertDescription>
       </Alert>
     );
@@ -32,7 +43,8 @@ export default async function MemoryDetailPage({ params }: MemoryDetailPageProps
       <Alert>
         <AlertTitle>Memory bank not configured</AlertTitle>
         <AlertDescription>
-          Configure an assistant ID from the Configuration page before opening memory details.
+          Configure an assistant ID from the Configuration page before opening
+          memory details.
         </AlertDescription>
       </Alert>
     );
@@ -48,20 +60,25 @@ export default async function MemoryDetailPage({ params }: MemoryDetailPageProps
       id: loaded.id,
       content: loaded.content,
       createdAt: loaded.createdAt,
-      updatedAt: loaded.updatedAt
+      updatedAt: loaded.updatedAt,
     };
   } catch (error) {
     if (error instanceof BackboardError && error.statusCode === 404) {
       notFound();
     }
-    fetchErrorMessage = error instanceof Error ? error.message : "Unexpected error while loading memory.";
+    fetchErrorMessage =
+      error instanceof Error
+        ? error.message
+        : "Unexpected error while loading memory.";
   }
 
   if (fetchErrorMessage || !memory) {
     return (
       <Alert variant="destructive">
         <AlertTitle>Could not load memory</AlertTitle>
-        <AlertDescription>{fetchErrorMessage ?? "Unexpected error while loading memory."}</AlertDescription>
+        <AlertDescription>
+          {fetchErrorMessage ?? "Unexpected error while loading memory."}
+        </AlertDescription>
       </Alert>
     );
   }
@@ -116,4 +133,3 @@ interface MemoryDetail {
   createdAt: string;
   updatedAt?: string;
 }
-

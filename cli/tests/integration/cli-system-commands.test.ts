@@ -1,4 +1,8 @@
-import { BackboardError, type BackboardClient, type ConfigurationResolver } from "@agent-memory/core";
+import {
+  BackboardError,
+  type BackboardClient,
+  type ConfigurationResolver
+} from "@agent-memory-cli/core";
 
 import { createSystemCommandHandlers, type CliCommandHandlers } from "../../src/commands";
 import { executeCliCommand } from "./helpers/command-harness";
@@ -36,7 +40,7 @@ describe("CLI system command handlers", () => {
 
     const result = await executeCliCommand(["stats", "--format", "json"], { handlers });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("\"totalMemories\": 3");
+    expect(result.stdout).toContain('"totalMemories": 3');
   });
 
   test("renders status in plain text", async () => {

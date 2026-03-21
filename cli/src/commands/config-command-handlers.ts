@@ -3,7 +3,7 @@ import {
   ConfigurationWriter,
   FileSystemAdapter,
   type ConfigurationTarget
-} from "@agent-memory/core";
+} from "@agent-memory-cli/core";
 
 import { CliUsageError } from "../errors";
 import type { CommandHandler } from "./types";
@@ -104,7 +104,10 @@ const configClearHandler = async (
   writeStdout(`No configuration found to clear at ${result.path}\n`);
 };
 
-function parseArgsAndTarget(args: string[]): { positionals: string[]; target: ConfigurationTarget } {
+function parseArgsAndTarget(args: string[]): {
+  positionals: string[];
+  target: ConfigurationTarget;
+} {
   const positionals: string[] = [];
   let target: ConfigurationTarget = "auto";
 

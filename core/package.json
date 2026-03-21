@@ -1,5 +1,5 @@
 {
-  "name": "@agent-memory/core",
+  "name": "@agent-memory-cli/core",
   "version": "0.1.0",
   "description": "Shared core library for Agent Memory CLI and web UI.",
   "license": "MIT",

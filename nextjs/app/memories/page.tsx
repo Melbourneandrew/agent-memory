@@ -1,14 +1,34 @@
 import Link from "next/link";
-import { BackboardError } from "@agent-memory/core";
+import { BackboardError } from "@agent-memory-cli/core";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatTimestamp, parsePositiveInt, toMemoryPreview } from "@/lib/memory-utils";
-import { createServerBackboardClient, resolveServerConfiguration } from "@/lib/server/core";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  formatTimestamp,
+  parsePositiveInt,
+  toMemoryPreview,
+} from "@/lib/memory-utils";
+import {
+  createServerBackboardClient,
+  resolveServerConfiguration,
+} from "@/lib/server/core";
 
 import { searchMemoriesAction } from "./actions";
 
@@ -25,7 +45,9 @@ interface StatsSummary {
   extras: Array<{ key: string; value: string }>;
 }
 
-export default async function MemoriesPage({ searchParams }: MemoriesPageProps) {
+export default async function MemoriesPage({
+  searchParams,
+}: MemoriesPageProps) {
   const params = await searchParams;
   const page = parsePositiveInt(toSingleValue(params[PAGE_KEY]), 1);
   const query = (toSingleValue(params[QUERY_KEY]) ?? "").trim();
@@ -38,8 +60,9 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
         <Alert>
           <AlertTitle>API key required</AlertTitle>
           <AlertDescription>
-            Run <code>agent-memory config set api-key &lt;your-api-key&gt;</code> in your terminal,
-            then reload this page.
+            Run{" "}
+            <code>agent-memory config set api-key &lt;your-api-key&gt;</code> in
+            your terminal, then reload this page.
           </AlertDescription>
         </Alert>
       </section>
@@ -52,7 +75,8 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
         <Alert>
           <AlertTitle>Memory bank not configured</AlertTitle>
           <AlertDescription>
-            Set an assistant ID in Configuration, or add your first memory to auto-create one.
+            Set an assistant ID in Configuration, or add your first memory to
+            auto-create one.
           </AlertDescription>
         </Alert>
       </section>
@@ -69,8 +93,16 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
     const [stats, memoryResponse] = await Promise.all([
       client.getStats(configuration.assistantId),
       isSearchMode
-        ? client.searchMemory(configuration.assistantId, query, DEFAULT_PAGE_SIZE)
-        : client.listMemories(configuration.assistantId, page, DEFAULT_PAGE_SIZE)
+        ? client.searchMemory(
+            configuration.assistantId,
+            query,
+            DEFAULT_PAGE_SIZE,
+          )
+        : client.listMemories(
+            configuration.assistantId,
+            page,
+            DEFAULT_PAGE_SIZE,
+          ),
     ]);
 
     statsSummary = toStatsSummary(stats);
@@ -101,10 +133,14 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
       <Card>
         <CardHeader>
           <CardTitle>Memory Stats</CardTitle>
-          <CardDescription>Current usage snapshot for this memory bank.</CardDescription>
+          <CardDescription>
+            Current usage snapshot for this memory bank.
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
-          <Badge variant="secondary">Total memories: {statsSummary.totalMemories}</Badge>
+          <Badge variant="secondary">
+            Total memories: {statsSummary.totalMemories}
+          </Badge>
           {statsSummary.extras.map((entry) => (
             <Badge key={entry.key} variant="outline">
               {entry.key}: {entry.value}
@@ -116,7 +152,9 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
       <Card>
         <CardHeader className="space-y-3">
           <div>
-            <CardTitle>{isSearchMode ? "Search Results" : "Memories"}</CardTitle>
+            <CardTitle>
+              {isSearchMode ? "Search Results" : "Memories"}
+            </CardTitle>
             <CardDescription>
               {isSearchMode
                 ? `Showing results for "${query}".`
@@ -124,7 +162,11 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
             </CardDescription>
           </div>
           <form action={searchMemoriesAction} className="flex gap-2">
-            <Input name="query" placeholder="Search memories..." defaultValue={query} />
+            <Input
+              name="query"
+              placeholder="Search memories..."
+              defaultValue={query}
+            />
             <Button type="submit">Search</Button>
             {isSearchMode ? (
               <Button asChild variant="outline">
@@ -136,7 +178,9 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
         <CardContent>
           {memories.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {isSearchMode ? "No matching memories were found." : "Memory bank is empty."}
+              {isSearchMode
+                ? "No matching memories were found."
+                : "Memory bank is empty."}
             </p>
           ) : (
             <div className="space-y-4">
@@ -152,13 +196,18 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
                   {memories.map((memory) => (
                     <TableRow key={memory.id}>
                       <TableCell className="font-mono text-xs">
-                        <Link href={`/memories/${memory.id}`} className="hover:underline">
+                        <Link
+                          href={`/memories/${memory.id}`}
+                          className="hover:underline"
+                        >
                           {memory.id}
                         </Link>
                       </TableCell>
                       <TableCell className="max-w-xl">
                         <div className="space-y-1">
-                          <p className="text-sm">{toMemoryPreview(memory.content)}</p>
+                          <p className="text-sm">
+                            {toMemoryPreview(memory.content)}
+                          </p>
                           {typeof memory.relevanceScore === "number" ? (
                             <p className="text-xs text-muted-foreground">
                               Relevance: {memory.relevanceScore.toFixed(2)}
@@ -181,7 +230,11 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
                   <div className="flex gap-2">
                     {hasPrevious ? (
                       <Button asChild variant="outline" size="sm">
-                        <Link href={`/memories?${PAGE_KEY}=${Math.max(1, page - 1)}`}>Previous</Link>
+                        <Link
+                          href={`/memories?${PAGE_KEY}=${Math.max(1, page - 1)}`}
+                        >
+                          Previous
+                        </Link>
                       </Button>
                     ) : (
                       <Button variant="outline" size="sm" disabled>
@@ -190,7 +243,9 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
                     )}
                     {hasNext ? (
                       <Button asChild variant="outline" size="sm">
-                        <Link href={`/memories?${PAGE_KEY}=${page + 1}`}>Next</Link>
+                        <Link href={`/memories?${PAGE_KEY}=${page + 1}`}>
+                          Next
+                        </Link>
                       </Button>
                     ) : (
                       <Button variant="outline" size="sm" disabled>
@@ -208,7 +263,9 @@ export default async function MemoriesPage({ searchParams }: MemoriesPageProps) 
   );
 }
 
-function toSingleValue(value: string | string[] | undefined): string | undefined {
+function toSingleValue(
+  value: string | string[] | undefined,
+): string | undefined {
   if (Array.isArray(value)) {
     return value[0];
   }
@@ -217,9 +274,12 @@ function toSingleValue(value: string | string[] | undefined): string | undefined
 
 function toStatsSummary(stats: unknown): StatsSummary {
   const statsRecord =
-    typeof stats === "object" && stats !== null ? (stats as Record<string, unknown>) : {};
+    typeof stats === "object" && stats !== null
+      ? (stats as Record<string, unknown>)
+      : {};
   const totalMemories =
-    typeof statsRecord.totalMemories === "number" && Number.isFinite(statsRecord.totalMemories)
+    typeof statsRecord.totalMemories === "number" &&
+    Number.isFinite(statsRecord.totalMemories)
       ? statsRecord.totalMemories
       : 0;
   const extras = Object.entries(statsRecord)
@@ -244,4 +304,3 @@ function toUiErrorMessage(error: unknown): string {
   }
   return "Unexpected error while loading memories.";
 }
-

@@ -4,7 +4,7 @@ import {
   type ConfigurationWriter,
   type MemoryRecord,
   type SearchMemoryResult
-} from "@agent-memory/core";
+} from "@agent-memory-cli/core";
 
 import { createMemoryCommandHandlers, type CliCommandHandlers } from "../../src/commands";
 import { executeCliCommand } from "./helpers/command-harness";
@@ -53,7 +53,11 @@ describe("CLI memory command handlers", () => {
   });
 
   test("auto-creates assistant for add and persists assistant id", async () => {
-    let writes: Array<{ assistantId?: string | null; target: "global" | "local" | "auto"; cwd: string }> = [];
+    let writes: Array<{
+      assistantId?: string | null;
+      target: "global" | "local" | "auto";
+      cwd: string;
+    }> = [];
     const handlers = createHandlers({
       resolverValues: { apiKey: "sk_test", assistantId: null },
       ensureAssistantId: async () => "asst_created_1",
@@ -157,7 +161,9 @@ describe("CLI memory command handlers", () => {
       })
     });
 
-    const result = await executeCliCommand(["list", "--page", "2", "--page-size", "3"], { handlers });
+    const result = await executeCliCommand(["list", "--page", "2", "--page-size", "3"], {
+      handlers
+    });
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("page 2, page size 3");
     expect(result.stdout).toContain("...");
@@ -223,7 +229,7 @@ describe("CLI memory command handlers", () => {
 
     const result = await executeCliCommand(["get", "mem_get", "--format", "json"], { handlers });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("\"id\": \"mem_get\"");
+    expect(result.stdout).toContain('"id": "mem_get"');
   });
 
   test("returns list response in JSON format", async () => {
@@ -233,8 +239,8 @@ describe("CLI memory command handlers", () => {
 
     const result = await executeCliCommand(["list", "--format", "json"], { handlers });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("\"page\": 1");
-    expect(result.stdout).toContain("\"pageSize\": 10");
+    expect(result.stdout).toContain('"page": 1');
+    expect(result.stdout).toContain('"pageSize": 10');
   });
 
   test("returns update response in JSON format", async () => {
@@ -242,9 +248,11 @@ describe("CLI memory command handlers", () => {
       resolverValues: { apiKey: "sk_test", assistantId: "asst_1" }
     });
 
-    const result = await executeCliCommand(["update", "mem_1", "new", "--format", "json"], { handlers });
+    const result = await executeCliCommand(["update", "mem_1", "new", "--format", "json"], {
+      handlers
+    });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("\"id\": \"mem_1\"");
+    expect(result.stdout).toContain('"id": "mem_1"');
   });
 
   test("deletes memory and prints confirmation", async () => {
@@ -265,8 +273,8 @@ describe("CLI memory command handlers", () => {
 
     const result = await executeCliCommand(["delete", "mem_1", "--format", "json"], { handlers });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("\"deleted\": true");
-    expect(result.stdout).toContain("\"operationId\": \"op_123\"");
+    expect(result.stdout).toContain('"deleted": true');
+    expect(result.stdout).toContain('"operationId": "op_123"');
   });
 
   test("errors when assistant id is missing for search/list/update", async () => {
@@ -339,9 +347,17 @@ describe("CLI memory command handlers", () => {
 function createHandlers(options: {
   resolverValues: { apiKey: string | null; assistantId: string | null };
   addMemory?: (assistantId: string, input: { content: string }) => Promise<MemoryRecord>;
-  searchMemory?: (assistantId: string, query: string, limit?: number) => Promise<SearchMemoryResult>;
+  searchMemory?: (
+    assistantId: string,
+    query: string,
+    limit?: number
+  ) => Promise<SearchMemoryResult>;
   getMemory?: (assistantId: string, memoryId: string) => Promise<MemoryRecord>;
-  listMemories?: (assistantId: string, page?: number, pageSize?: number) => Promise<SearchMemoryResult>;
+  listMemories?: (
+    assistantId: string,
+    page?: number,
+    pageSize?: number
+  ) => Promise<SearchMemoryResult>;
   updateMemory?: (
     assistantId: string,
     memoryId: string,
@@ -410,7 +426,9 @@ function createHandlers(options: {
     listMemories:
       options.listMemories ??
       (async () => ({
-        memories: [{ id: "mem_list_default", content: "listed", createdAt: "2026-03-16T00:00:00.000Z" }],
+        memories: [
+          { id: "mem_list_default", content: "listed", createdAt: "2026-03-16T00:00:00.000Z" }
+        ],
         totalCount: 1
       })),
     updateMemory:
@@ -420,9 +438,7 @@ function createHandlers(options: {
         content: input.content,
         createdAt: "2026-03-16T00:00:00.000Z"
       })),
-    deleteMemory:
-      options.deleteMemory ??
-      (async () => ({ deleted: true })),
+    deleteMemory: options.deleteMemory ?? (async () => ({ deleted: true })),
     createAssistant: async () => ({
       assistantId: options.ensuredAssistantId ?? "asst_default",
       name: "agent-memory-cli",

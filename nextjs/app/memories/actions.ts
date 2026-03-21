@@ -1,10 +1,14 @@
 "use server";
 
-import { BackboardError, type MemoryRecord } from "@agent-memory/core";
+import { BackboardError, type MemoryRecord } from "@agent-memory-cli/core";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-import { createServerBackboardClient, ensureServerAssistantId, resolveServerConfiguration } from "@/lib/server/core";
+import {
+  createServerBackboardClient,
+  ensureServerAssistantId,
+  resolveServerConfiguration,
+} from "@/lib/server/core";
 
 export interface MemoryActionResult {
   ok: boolean;
@@ -30,11 +34,13 @@ export async function searchMemoriesAction(formData: FormData): Promise<void> {
   redirect(`/memories?${SEARCH_QUERY_PARAM}=${encoded}`);
 }
 
-export async function createMemoryAction(content: string): Promise<MemoryActionResult> {
+export async function createMemoryAction(
+  content: string,
+): Promise<MemoryActionResult> {
   if (content.trim().length === 0) {
     return {
       ok: false,
-      message: "Memory content is required."
+      message: "Memory content is required.",
     };
   }
 
@@ -43,7 +49,8 @@ export async function createMemoryAction(content: string): Promise<MemoryActionR
     if (!configuration.apiKey) {
       return {
         ok: false,
-        message: "Authentication required. Set an API key in Configuration before creating memories."
+        message:
+          "Authentication required. Set an API key in Configuration before creating memories.",
       };
     }
 
@@ -57,39 +64,41 @@ export async function createMemoryAction(content: string): Promise<MemoryActionR
       ok: true,
       message: "Memory added successfully.",
       memoryId: memory.id,
-      memory
+      memory,
     };
   } catch (error) {
     return {
       ok: false,
-      message: toActionErrorMessage(error)
+      message: toActionErrorMessage(error),
     };
   }
 }
 
 export async function updateMemoryAction(
   memoryId: string,
-  content: string
+  content: string,
 ): Promise<MemoryActionResult> {
   const normalizedId = memoryId.trim();
   if (!normalizedId) {
     return {
       ok: false,
-      message: "A valid memory ID is required."
+      message: "A valid memory ID is required.",
     };
   }
 
   if (content.trim().length === 0) {
     return {
       ok: false,
-      message: "Updated memory content is required."
+      message: "Updated memory content is required.",
     };
   }
 
   try {
     const client = createServerBackboardClient();
     const assistantId = resolveAssistantIdForMutations();
-    const memory = await client.updateMemory(assistantId, normalizedId, { content });
+    const memory = await client.updateMemory(assistantId, normalizedId, {
+      content,
+    });
 
     revalidatePath("/memories");
     revalidatePath(`/memories/${normalizedId}`);
@@ -97,22 +106,24 @@ export async function updateMemoryAction(
       ok: true,
       message: "Memory updated successfully.",
       memoryId: memory.id,
-      memory
+      memory,
     };
   } catch (error) {
     return {
       ok: false,
-      message: toActionErrorMessage(error)
+      message: toActionErrorMessage(error),
     };
   }
 }
 
-export async function deleteMemoryAction(memoryId: string): Promise<MemoryActionResult> {
+export async function deleteMemoryAction(
+  memoryId: string,
+): Promise<MemoryActionResult> {
   const normalizedId = memoryId.trim();
   if (!normalizedId) {
     return {
       ok: false,
-      message: "A valid memory ID is required."
+      message: "A valid memory ID is required.",
     };
   }
 
@@ -127,34 +138,39 @@ export async function deleteMemoryAction(memoryId: string): Promise<MemoryAction
       ok: true,
       message: "Memory deleted successfully.",
       memoryId: normalizedId,
-      deleted: true
+      deleted: true,
     };
   } catch (error) {
     return {
       ok: false,
-      message: toActionErrorMessage(error)
+      message: toActionErrorMessage(error),
     };
   }
 }
 
 export async function searchMemoryAction(
   query: string,
-  limit = DEFAULT_SEARCH_LIMIT
+  limit = DEFAULT_SEARCH_LIMIT,
 ): Promise<MemoryActionResult> {
   const normalizedQuery = query.trim();
   if (!normalizedQuery) {
     return {
       ok: false,
-      message: "Search query is required."
+      message: "Search query is required.",
     };
   }
 
-  const normalizedLimit = Number.isInteger(limit) && limit > 0 ? limit : DEFAULT_SEARCH_LIMIT;
+  const normalizedLimit =
+    Number.isInteger(limit) && limit > 0 ? limit : DEFAULT_SEARCH_LIMIT;
 
   try {
     const client = createServerBackboardClient();
     const assistantId = resolveAssistantIdForMutations();
-    const results = await client.searchMemory(assistantId, normalizedQuery, normalizedLimit);
+    const results = await client.searchMemory(
+      assistantId,
+      normalizedQuery,
+      normalizedLimit,
+    );
     return {
       ok: true,
       message:
@@ -162,12 +178,12 @@ export async function searchMemoryAction(
           ? "Search completed successfully."
           : "No matching memories were found.",
       memories: results.memories,
-      totalCount: results.totalCount ?? results.memories.length
+      totalCount: results.totalCount ?? results.memories.length,
     };
   } catch (error) {
     return {
       ok: false,
-      message: toActionErrorMessage(error)
+      message: toActionErrorMessage(error),
     };
   }
 }
@@ -175,13 +191,15 @@ export async function searchMemoryAction(
 function resolveAssistantIdForMutations(): string {
   const configuration = resolveServerConfiguration();
   if (!configuration.apiKey) {
-    throw new Error("Authentication required. Set an API key in Configuration.");
+    throw new Error(
+      "Authentication required. Set an API key in Configuration.",
+    );
   }
 
   const assistantId = configuration.assistantId?.trim();
   if (!assistantId) {
     throw new Error(
-      "Memory bank not configured. Add a memory first or set assistant-id in Configuration."
+      "Memory bank not configured. Add a memory first or set assistant-id in Configuration.",
     );
   }
 
@@ -225,8 +243,12 @@ function isNetworkError(error: unknown): boolean {
     return false;
   }
 
-  return [/fetch/i, /network/i, /timeout/i, /econn/i, /enotfound/i, /socket/i].some((pattern) =>
-    pattern.test(error.message)
-  );
+  return [
+    /fetch/i,
+    /network/i,
+    /timeout/i,
+    /econn/i,
+    /enotfound/i,
+    /socket/i,
+  ].some((pattern) => pattern.test(error.message));
 }
-

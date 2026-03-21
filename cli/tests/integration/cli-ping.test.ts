@@ -1,4 +1,4 @@
-import { BackboardError } from "@agent-memory/core";
+import { BackboardError } from "@agent-memory-cli/core";
 
 import { executeCliCommand } from "./helpers/command-harness";
 

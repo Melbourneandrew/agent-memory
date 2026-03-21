@@ -21,20 +21,20 @@
 
 ## Build and Quality Gates
 
-- `npm run build --workspace @agent-memory/core`
-- `npm run build --workspace agent-memory`
-- `npm run test --workspace @agent-memory/core`
-- `npm run test --workspace agent-memory`
-- `npm run lint --workspace @agent-memory/core`
-- `npm run lint --workspace agent-memory`
-- `npm run format --workspace @agent-memory/core` (when formatting changes are required)
-- `npm run format --workspace agent-memory` (when formatting changes are required)
+- `npm run build --workspace @agent-memory-cli/core`
+- `npm run build --workspace agent-memory-cli`
+- `npm run test --workspace @agent-memory-cli/core`
+- `npm run test --workspace agent-memory-cli`
+- `npm run lint --workspace @agent-memory-cli/core`
+- `npm run lint --workspace agent-memory-cli`
+- `npm run format --workspace @agent-memory-cli/core` (when formatting changes are required)
+- `npm run format --workspace agent-memory-cli` (when formatting changes are required)
 
 ## CLI Building Conventions
 
 - Keep `agent-memory` bin mapping pointed at compiled `dist/bin.js`.
 - Preserve shebang in CLI entrypoint (`#!/usr/bin/env node`) for global installs.
-- Keep command parsing thin; business logic should stay in `@agent-memory/core`.
+- Keep command parsing thin; business logic should stay in `@agent-memory-cli/core`.
 
 ## Web UI Building Conventions
 

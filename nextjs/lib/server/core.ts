@@ -8,8 +8,8 @@ import {
   ConfigurationResolver,
   ConfigurationWriter,
   type PartialConfigurationValues,
-  type ConfigurationValues
-} from "@agent-memory/core";
+  type ConfigurationValues,
+} from "@agent-memory-cli/core";
 
 const configurationResolver = new ConfigurationResolver();
 const configurationReader = new ConfigurationReader();
@@ -19,7 +19,9 @@ const assistantInitializationByCwd = new Map<
   Promise<{ assistantId: string; created: boolean }>
 >();
 
-export function resolveServerConfiguration(cwd = process.cwd()): ConfigurationValues {
+export function resolveServerConfiguration(
+  cwd = process.cwd(),
+): ConfigurationValues {
   return configurationResolver.resolve({ cwd });
 }
 
@@ -27,10 +29,14 @@ export function readLocalServerConfiguration(cwd = process.cwd()) {
   return configurationReader.read("local", cwd);
 }
 
-export function createServerBackboardClient(cwd = process.cwd()): BackboardClient {
+export function createServerBackboardClient(
+  cwd = process.cwd(),
+): BackboardClient {
   const configuration = resolveServerConfiguration(cwd);
   if (!configuration.apiKey) {
-    throw new Error("No API key configured for server-side Backboard operations.");
+    throw new Error(
+      "No API key configured for server-side Backboard operations.",
+    );
   }
 
   return new BackboardClient(configuration.apiKey);
@@ -39,24 +45,26 @@ export function createServerBackboardClient(cwd = process.cwd()): BackboardClien
 export function writeServerConfiguration(
   updates: PartialConfigurationValues,
   target: ConfigurationTarget = "local",
-  cwd = process.cwd()
+  cwd = process.cwd(),
 ): { path: string; values: ConfigurationValues } {
   return configurationWriter.write(updates, target, cwd);
 }
 
 export function clearServerConfiguration(
   target: ConfigurationTarget = "local",
-  cwd = process.cwd()
+  cwd = process.cwd(),
 ): { path: string; deleted: boolean } {
   return configurationWriter.clear(target, cwd);
 }
 
 export async function ensureServerAssistantId(
-  cwd = process.cwd()
+  cwd = process.cwd(),
 ): Promise<{ assistantId: string; created: boolean }> {
   const configuration = resolveServerConfiguration(cwd);
   if (!configuration.apiKey) {
-    throw new Error("No API key configured for server-side Backboard operations.");
+    throw new Error(
+      "No API key configured for server-side Backboard operations.",
+    );
   }
 
   const existingAssistantId = configuration.assistantId?.trim();
@@ -81,7 +89,7 @@ export async function ensureServerAssistantId(
 
 async function createAndPersistAssistantId(
   cwd: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<{ assistantId: string; created: boolean }> {
   const refreshed = resolveServerConfiguration(cwd);
   const existingAssistantId = refreshed.assistantId?.trim();
@@ -95,4 +103,3 @@ async function createAndPersistAssistantId(
   configurationWriter.write({ assistantId }, "auto", cwd);
   return { assistantId, created: true };
 }
-

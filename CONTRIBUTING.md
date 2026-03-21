@@ -19,9 +19,9 @@ npm run build
 
 `npm run build` compiles TypeScript in `core` and `cli` and runs `next build` for the web app. The CLI reads compiled output from `cli/dist/`.
 
-**Shared dependency:** `cli` and `nextjs` both use `@agent-memory/core`. After you change `core`, rebuild it (`npm run build --workspace @agent-memory/core`) or run `npm run build` from the repo root so `dist/` stays in sync for dependents.
+**Shared dependency:** `cli` and `nextjs` both use `@agent-memory-cli/core`. After you change `core`, rebuild it (`npm run build --workspace @agent-memory-cli/core`) or run `npm run build` from the repo root so `dist/` stays in sync for dependents.
 
-## `core` (`@agent-memory/core`)
+## `core` (`@agent-memory-cli/core`)
 
 Shared library: Backboard access, config resolution, assistant helpers, shared types.
 
@@ -32,15 +32,15 @@ Shared library: Backboard access, config resolution, assistant helpers, shared t
 From the repo root:
 
 ```bash
-npm run test --workspace @agent-memory/core
-npm run build --workspace @agent-memory/core
+npm run test --workspace @agent-memory-cli/core
+npm run build --workspace @agent-memory-cli/core
 ```
 
 This package is published to npm. More detail: [`core/README.md`](core/README.md).
 
-## CLI (`agent-memory`)
+## CLI (`agent-memory-cli`)
 
-The `agent-memory` command-line tool; dispatches subcommands and calls `@agent-memory/core`.
+The `agent-memory` command-line tool (npm package `agent-memory-cli`); dispatches subcommands and calls `@agent-memory-cli/core`.
 
 - **Source:** `cli/src/` — `bin.ts`, `cli.ts`, `commands/`, `utils/`
 - **Tests:** `cli/tests/integration/*.test.ts` — mock Backboard with **nock**, use temp dirs for config; no live API calls in CI
@@ -49,19 +49,19 @@ The `agent-memory` command-line tool; dispatches subcommands and calls `@agent-m
 Run from the repo root without installing globally:
 
 ```bash
-npm exec --workspace agent-memory -- agent-memory --help
+npm exec --workspace agent-memory-cli -- agent-memory --help
 ```
 
 Optional global link while developing (so you can type `agent-memory` in any terminal):
 
 ```bash
-npm run build --workspace agent-memory
+npm run build --workspace agent-memory-cli
 cd cli && npm link
 ```
 
-Remove with `npm unlink -g agent-memory`.
+Remove with `npm unlink -g agent-memory-cli`.
 
-**Why `agent-memory` is “command not found”:** `npm link agent-memory` (run from some _other_ project) only links that project’s `node_modules` to the globally registered package. It does **not** install the `agent-memory` executable. You must run **`npm link` once from inside `cli/`** (after `npm run build`) so npm registers the `bin` in your global prefix. `npm link agent-memory` from the monorepo root does not do that either.
+**Why `agent-memory` is “command not found”:** `npm link agent-memory-cli` (run from some _other_ project) only links that project’s `node_modules` to the globally registered package. It does **not** install the `agent-memory` executable. You must run **`npm link` once from inside `cli/`** (after `npm run build`) so npm registers the `bin` in your global prefix. `npm link agent-memory-cli` from the monorepo root does not do that either.
 
 If the binary exists but the shell still cannot find it, ensure your global npm bin directory is on `PATH` (often `$(npm config get prefix)/bin`; Homebrew Node on macOS typically already includes it). Manual testing with real Backboard: [`docs/configuration.md`](docs/configuration.md).
 
@@ -70,7 +70,7 @@ If the binary exists but the shell still cannot find it, ensure your global npm 
 Next.js App Router app (private workspace package; not published).
 
 - **Source:** `nextjs/app/` (routes), `nextjs/components/`, `nextjs/lib/`
-- **Tests:** `nextjs/tests/` — pages, server actions, and server-only boundaries; mock `@agent-memory/core` at the server boundary (see [`.cursor/skills/testing/SKILL.md`](.cursor/skills/testing/SKILL.md))
+- **Tests:** `nextjs/tests/` — pages, server actions, and server-only boundaries; mock `@agent-memory-cli/core` at the server boundary (see [`.cursor/skills/testing/SKILL.md`](.cursor/skills/testing/SKILL.md))
 - **Package scripts:** `dev`, `build`, `start`, `test`, `lint` — there is **no** `format` script here; formatting is enforced from the root (below)
 
 ```bash

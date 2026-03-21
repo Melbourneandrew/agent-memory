@@ -13,7 +13,7 @@ Next.js App Router package for the local Agent Memory web interface.
 
 - `app/` contains route segments and Server Components.
 - `components/ui/` contains local shadcn/ui primitives.
-- `lib/server/` contains server-only integration code for `@agent-memory/core`.
+- `lib/server/` contains server-only integration code for `@agent-memory-cli/core`.
 
 ## shadcn/ui Usage Patterns
 
@@ -25,6 +25,5 @@ Next.js App Router package for the local Agent Memory web interface.
 
 ## Server-Only Core Integration
 
-`lib/server/core.ts` is the entry point for importing `@agent-memory/core` inside the web package.
+`lib/server/core.ts` is the entry point for importing `@agent-memory-cli/core` inside the web package.
 It uses `server-only` so API-key-dependent logic cannot be imported into browser bundles.
-
