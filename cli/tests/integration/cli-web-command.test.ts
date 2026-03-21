@@ -1,5 +1,6 @@
 import type { ChildProcess } from "node:child_process";
 import { EventEmitter } from "node:events";
+import { join } from "node:path";
 import { PassThrough } from "node:stream";
 
 import type { CliCommandHandlers } from "../../src/commands";
@@ -18,6 +19,13 @@ class FakeChildProcess extends EventEmitter {
     this.signalCode = signal;
     this.emit("exit", code, signal);
   }
+}
+
+const testAppDir = "/tmp/nextjs";
+const testBuildIdPath = join(testAppDir, ".next", "BUILD_ID");
+
+function fileExistsWhenBuilt(path: string): boolean {
+  return path === testBuildIdPath;
 }
 
 function buildHandlers(web: CliCommandHandlers["web"]): CliCommandHandlers {
@@ -53,9 +61,9 @@ describe("CLI web command", () => {
         resolve: () => ({ apiKey: "sk_test", assistantId: null })
       },
       checkPortAvailability: async () => ({ available: true }),
-      resolveWebAppDirectory: () => "/tmp/nextjs",
+      resolveWebAppDirectory: () => testAppDir,
       resolveNextBinPath: () => "/tmp/next-bin.js",
-      fileExists: () => false,
+      fileExists: fileExistsWhenBuilt,
       spawnProcess: spawnMock,
       waitForServerReady: async () => undefined,
       openBrowser,
@@ -68,10 +76,14 @@ describe("CLI web command", () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toBe("");
-    expect(result.stdout).toContain("Starting Agent Memory web UI at http://localhost:4100 (dev mode)");
+    expect(result.stdout).toContain("Starting Agent Memory web UI at http://localhost:4100...");
+    expect(spawnMock).toHaveBeenCalledWith(
+      expect.any(String),
+      ["/tmp/next-bin.js", "start", testAppDir, "--port", "4100", "--hostname", "127.0.0.1"],
+      expect.any(Object)
+    );
     expect(result.stdout).toContain("Opened browser at http://localhost:4100");
     expect(openBrowser).toHaveBeenCalledWith("http://localhost:4100", "darwin");
-    expect(spawnMock).toHaveBeenCalled();
   });
 
   test("fails when api key is missing", async () => {
@@ -120,6 +132,25 @@ describe("CLI web command", () => {
     expect(result.stderr).toContain("between 1 and 65535");
   });
 
+  test("fails when web UI is not built", async () => {
+    const webHandler = createWebCommandHandler({
+      configurationResolver: {
+        resolve: () => ({ apiKey: "sk_test", assistantId: null })
+      },
+      checkPortAvailability: async () => ({ available: true }),
+      resolveWebAppDirectory: () => testAppDir,
+      fileExists: () => false
+    }).web;
+
+    const result = await executeCliCommand(["web"], {
+      handlers: buildHandlers(webHandler)
+    });
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("no production build");
+    expect(result.stderr).toContain("BUILD_ID");
+  });
+
   test("kills server when startup readiness fails", async () => {
     const child = new FakeChildProcess();
     child.kill.mockImplementation(() => {
@@ -134,9 +165,9 @@ describe("CLI web command", () => {
         resolve: () => ({ apiKey: "sk_test", assistantId: null })
       },
       checkPortAvailability: async () => ({ available: true }),
-      resolveWebAppDirectory: () => "/tmp/nextjs",
+      resolveWebAppDirectory: () => testAppDir,
       resolveNextBinPath: () => "/tmp/next-bin.js",
-      fileExists: () => false,
+      fileExists: fileExistsWhenBuilt,
       spawnProcess: spawnMock,
       waitForServerReady: async () => {
         throw new Error("Timed out waiting for web server.");
@@ -168,9 +199,9 @@ describe("CLI web command", () => {
         resolve: () => ({ apiKey: "sk_test", assistantId: null })
       },
       checkPortAvailability: async () => ({ available: true }),
-      resolveWebAppDirectory: () => "/tmp/nextjs",
+      resolveWebAppDirectory: () => testAppDir,
       resolveNextBinPath: () => "/tmp/next-bin.js",
-      fileExists: () => false,
+      fileExists: fileExistsWhenBuilt,
       spawnProcess: spawnMock,
       waitForServerReady: async () =>
         new Promise<void>((resolvePromise) => {

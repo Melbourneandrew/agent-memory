@@ -12,8 +12,6 @@ const DEFAULT_WEB_PORT = 8090;
 const READY_TIMEOUT_MS = 15000;
 const READY_CHECK_INTERVAL_MS = 250;
 
-type WebServerMode = "dev" | "start";
-
 export interface WebCommandDependencies {
   readonly configurationResolver: Pick<ConfigurationResolver, "resolve">;
   readonly checkPortAvailability: (port: number) => Promise<PortAvailabilityResult>;
@@ -91,13 +89,13 @@ async function webHandler(
 
   const appDirectory = dependencies.resolveWebAppDirectory(cwd);
   const nextBinPath = dependencies.resolveNextBinPath(cwd);
-  const mode = resolveMode(appDirectory, dependencies.fileExists);
+  assertWebUiBuilt(appDirectory, dependencies.fileExists);
   const url = `http://localhost:${port}`;
 
-  writeStdout(`Starting Agent Memory web UI at ${url} (${mode} mode)...\n`);
+  writeStdout(`Starting Agent Memory web UI at ${url}...\n`);
   const child = dependencies.spawnProcess(
     process.execPath,
-    [nextBinPath, mode, appDirectory, "--port", String(port), "--hostname", "127.0.0.1"],
+    [nextBinPath, "start", appDirectory, "--port", String(port), "--hostname", "127.0.0.1"],
     {
       cwd: appDirectory,
       env: process.env,
@@ -152,8 +150,15 @@ function parseWebPort(args: string[]): number {
   return port;
 }
 
-function resolveMode(appDirectory: string, fileExists: (path: string) => boolean): WebServerMode {
-  return fileExists(join(appDirectory, ".next", "BUILD_ID")) ? "start" : "dev";
+function assertWebUiBuilt(appDirectory: string, fileExists: (path: string) => boolean): void {
+  const buildIdPath = join(appDirectory, ".next", "BUILD_ID");
+  if (!fileExists(buildIdPath)) {
+    throw new CliUsageError(
+      "Web UI has no production build (missing nextjs/.next/BUILD_ID). " +
+        "From this repository run `npm run build` before `agent-memory web`, or use `npm run dev --workspace @agent-memory/nextjs` while developing the UI. " +
+        "The published npm package includes a prebuilt .next from CI; reinstall if files are missing."
+    );
+  }
 }
 
 async function waitForChildProcess(
