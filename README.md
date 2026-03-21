@@ -78,6 +78,8 @@ Import from `@agent-memory/core` in Node or bundled apps after `npm install @age
 
 ## Development
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for working on **core**, the **CLI**, and the **Next.js** app (paths, tests, and workspace commands).
+
 ```bash
 npm install
 npm run build

@@ -1,26 +1,14 @@
 # Contributing to Agent Memory
 
-Thanks for helping improve Agent Memory. This document explains how to set up the monorepo, run checks locally, and what we expect in pull requests.
+This document covers setup, how to work on each package (`core`, CLI, Next.js), and pull request expectations.
 
 ## Prerequisites
 
-- **Node.js 20 or newer** (matches CI and each package’s `engines` field)
-- **npm** (workspaces are npm-based; `npm ci` is used in CI)
-- Optional: **Python 3.10+** if you want to preview the published docs site locally with MkDocs
+- **Node.js 20+** (matches CI and each package’s `engines` field)
+- **npm** (workspaces; CI uses `npm ci`)
+- Optional: **Python 3.10+** to preview MkDocs for [`docs/`](docs/)
 
-## Repository layout
-
-This is an npm workspaces monorepo:
-
-| Workspace              | Path      | Role                                          |
-| ---------------------- | --------- | --------------------------------------------- |
-| `@agent-memory/core`   | `core/`   | Shared library (Backboard-backed memory APIs) |
-| `agent-memory`         | `cli/`    | CLI; publishes the `agent-memory` binary      |
-| `@agent-memory/nextjs` | `nextjs/` | Next.js web UI (private package)              |
-
-User-facing CLI and product documentation lives under [`docs/`](docs/); the root [`README.md`](README.md) has quick start and everyday commands.
-
-## First-time setup
+## Clone, install, build
 
 ```bash
 git clone https://github.com/Melbourneandrew/agent-memory.git
@@ -29,98 +17,104 @@ npm install
 npm run build
 ```
 
-`npm run build` compiles TypeScript in `core` and `cli` and builds the Next.js app. You need a successful build before running the CLI from source (the binary points at `cli/dist/`).
+`npm run build` compiles TypeScript in `core` and `cli` and runs `next build` for the web app. The CLI reads compiled output from `cli/dist/`.
 
-## Running the CLI and web UI locally
+**Shared dependency:** `cli` and `nextjs` both use `@agent-memory/core`. After you change `core`, rebuild it (`npm run build --workspace @agent-memory/core`) or run `npm run build` from the repo root so `dist/` stays in sync for dependents.
 
-From the repo root, run the CLI without a global install:
+## `core` (`@agent-memory/core`)
+
+Shared library: Backboard access, config resolution, assistant helpers, shared types.
+
+- **Source:** `core/src/` — `config/`, `backboard/`, `assistant/`, `utils/`, `types.ts`
+- **Tests:** Colocated `*.test.ts` next to source; Jest with coverage (`npm run test` includes `--coverage`)
+- **Package scripts:** `build`, `test`, `lint`, `format`
+
+From the repo root:
+
+```bash
+npm run test --workspace @agent-memory/core
+npm run build --workspace @agent-memory/core
+```
+
+This package is published to npm. More detail: [`core/README.md`](core/README.md).
+
+## CLI (`agent-memory`)
+
+The `agent-memory` command-line tool; dispatches subcommands and calls `@agent-memory/core`.
+
+- **Source:** `cli/src/` — `bin.ts`, `cli.ts`, `commands/`, `utils/`
+- **Tests:** `cli/tests/integration/*.test.ts` — mock Backboard with **nock**, use temp dirs for config; no live API calls in CI
+- **Package scripts:** `build`, `test`, `lint`, `format`
+
+Run from the repo root without installing globally:
 
 ```bash
 npm exec --workspace agent-memory -- agent-memory --help
 ```
 
-Run the Next.js app in development:
-
-```bash
-npm run dev --workspace @agent-memory/nextjs
-```
-
-To use the `agent-memory` command globally while developing:
+Optional global link while developing:
 
 ```bash
 npm run build --workspace agent-memory
 cd cli && npm link
 ```
 
-Remove the link when you are done: `npm unlink -g agent-memory`.
+Remove with `npm unlink -g agent-memory`. Manual testing with real Backboard: [`docs/configuration.md`](docs/configuration.md).
 
-Backboard credentials for manual testing are described in [`docs/configuration.md`](docs/configuration.md) (environment variables and config files). Automated tests must not call real APIs; use mocks (see below).
+## Web UI (`@agent-memory/nextjs`)
 
-## Tests
+Next.js App Router app (private workspace package; not published).
 
-Run the full suite from the root (what CI runs):
+- **Source:** `nextjs/app/` (routes), `nextjs/components/`, `nextjs/lib/`
+- **Tests:** `nextjs/tests/` — pages, server actions, and server-only boundaries; mock `@agent-memory/core` at the server boundary (see [`.cursor/skills/testing/SKILL.md`](.cursor/skills/testing/SKILL.md))
+- **Package scripts:** `dev`, `build`, `start`, `test`, `lint` — there is **no** `format` script here; formatting is enforced from the root (below)
+
+```bash
+npm run dev --workspace @agent-memory/nextjs
+```
+
+Production-style check: `npm run build --workspace @agent-memory/nextjs`.
+
+## Testing
 
 ```bash
 npm run test
 ```
 
-Target a single workspace:
-
-```bash
-npm run test --workspace @agent-memory/core
-npm run test --workspace agent-memory
-npm run test --workspace @agent-memory/nextjs
-```
-
-Conventions (more detail in [`.cursor/skills/testing/SKILL.md`](.cursor/skills/testing/SKILL.md)):
-
-- Prefer deterministic tests; mock external HTTP (CLI tests use **nock** for Backboard).
-- CLI integration tests live under `cli/tests/integration/` as `*.test.ts`.
-- Add happy-path and failure-path coverage for new behavior where it applies.
-
-Do not open a pull request with failing tests; CI will reject them.
+Runs all workspace test suites (what CI runs). Per-workspace commands are listed above. General conventions: deterministic tests, mock external HTTP and APIs, not internal implementation details — details in [`.cursor/skills/testing/SKILL.md`](.cursor/skills/testing/SKILL.md).
 
 ## Lint and format
 
 ```bash
 npm run lint
-npm run format        # write fixes (Prettier) in workspaces
-npm run format:check  # full-repo Prettier check (useful before pushing)
+npm run format        # Prettier in core + cli workspaces
+npm run format:check  # Prettier across repo (includes nextjs/, docs/, etc.)
 ```
 
-Pull requests run ESLint and tests on all workspaces, then Prettier `--check` on changed `ts`, `tsx`, `js`, `json`, `md`, `yml`, and `yaml` files compared to the base branch.
+Pull requests run ESLint on every workspace, then Prettier `--check` on **changed** `ts`, `tsx`, `js`, `json`, `md`, `yml`, and `yaml` files vs the base branch ([`.github/workflows/pr-validation.yml`](.github/workflows/pr-validation.yml)). Husky **lint-staged** may run on commit (see root `package.json`).
 
-The repo installs **Husky** via the root `prepare` script; commit hooks may run **lint-staged** on staged files. Fix reported issues before committing when hooks are enabled.
+To format Next.js files by hand from the repo root:
 
-## Documentation changes
+```bash
+npx prettier --write "nextjs/**/*.{ts,tsx,js}"
+```
 
-End-user docs are Markdown in `docs/` and built with **MkDocs** (Material theme). Configuration is in [`mkdocs.yml`](mkdocs.yml).
+## Documentation
 
-To preview locally:
+User-facing docs live in `docs/` and are built with MkDocs ([`mkdocs.yml`](mkdocs.yml)).
 
 ```bash
 pip install mkdocs-material
 mkdocs serve
 ```
 
-Pushes to `main` that touch `docs/`, `mkdocs.yml`, or the docs workflow trigger deployment to GitHub Pages (see [`.github/workflows/deploy-docs.yml`](.github/workflows/deploy-docs.yml)).
+Pushes to `main` that touch `docs/`, `mkdocs.yml`, or the docs workflow deploy GitHub Pages ([`.github/workflows/deploy-docs.yml`](.github/workflows/deploy-docs.yml)).
 
 ## Pull requests
 
-1. **Branch from `main`** with a focused change set (one concern per PR when practical).
-2. **Run locally** before opening or updating a PR:
-   - `npm run lint`
-   - `npm run build`
-   - `npm run test`
-   - If you changed formatted file types, ensure Prettier is clean (CI only checks changed files, but keeping formatting consistent avoids churn).
-3. **Describe the change** in the PR: what problem it solves, how you verified it (commands run), and any follow-ups or risks.
-4. **Keep commits readable**; maintainers may squash on merge, but a clear history helps review.
-
-CI workflow: [`.github/workflows/pr-validation.yml`](.github/workflows/pr-validation.yml) (`npm ci`, lint, build, test, Prettier on changed files).
-
-## Questions and scope
-
-- For **product behavior** and CLI syntax, start from [`docs/index.md`](docs/index.md) and the command reference.
-- If you are unsure whether an idea fits the project, open an issue or draft PR for discussion before investing in a large change.
+1. Branch from `main`; keep the change set focused when practical.
+2. Before you open or update a PR, run `npm run lint`, `npm run build`, and `npm run test`; ensure Prettier is clean (`npm run format:check` or your editor / lint-staged).
+3. Describe the problem, the approach, and how you verified (commands you ran).
+4. For product behavior and CLI syntax, align with [`docs/index.md`](docs/index.md) and [`docs/command-reference.md`](docs/command-reference.md). If a large feature is uncertain, open an issue or draft PR first.
 
 Thank you for contributing.
