@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { clearServerConfiguration, writeServerConfiguration } from "@/lib/server/core";
+import {
+  clearServerConfiguration,
+  writeServerConfiguration,
+} from "@/lib/server/core";
 
 export interface ConfigurationActionResult {
   ok: boolean;
@@ -12,9 +15,12 @@ export interface ConfigurationActionResult {
 
 type ConfigurationField = "apiKey" | "assistantId";
 
-export async function updateConfigurationAction(formData: FormData): Promise<void> {
+export async function updateConfigurationAction(
+  formData: FormData,
+): Promise<void> {
   const fieldValue = formData.get("field");
-  const field = fieldValue === "apiKey" || fieldValue === "assistantId" ? fieldValue : null;
+  const field =
+    fieldValue === "apiKey" || fieldValue === "assistantId" ? fieldValue : null;
   if (!field) {
     redirectToConfig({ error: "Unknown configuration field." });
   }
@@ -33,10 +39,14 @@ export async function updateConfigurationAction(formData: FormData): Promise<voi
   const updates = fieldToUpdates(field, value);
   writeServerConfiguration(updates, "local");
   revalidatePath("/config");
-  redirectToConfig({ success: field === "apiKey" ? "API key saved." : "Memory Bank ID saved." });
+  redirectToConfig({
+    success: field === "apiKey" ? "API key saved." : "Memory Bank ID saved.",
+  });
 }
 
-export async function clearConfigurationAction(formData: FormData): Promise<void> {
+export async function clearConfigurationAction(
+  formData: FormData,
+): Promise<void> {
   const confirm = formData.get("confirm");
   const value = typeof confirm === "string" ? confirm.trim() : "";
   if (value !== "CLEAR") {
@@ -46,13 +56,14 @@ export async function clearConfigurationAction(formData: FormData): Promise<void
   clearServerConfiguration("local");
   revalidatePath("/config");
   redirectToConfig({
-    success: "Local configuration cleared. Effective credentials may still come from env/global."
+    success:
+      "Local configuration cleared. Effective credentials may still come from env/global.",
   });
 }
 
 function fieldToUpdates(
   field: ConfigurationField,
-  value: string
+  value: string,
 ): { apiKey?: string; assistantId?: string } {
   if (field === "apiKey") {
     return { apiKey: value };
@@ -73,4 +84,3 @@ function redirectToConfig(values: { success?: string; error?: string }): never {
   const query = params.toString();
   redirect(query.length > 0 ? `/config?${query}` : "/config");
 }
-

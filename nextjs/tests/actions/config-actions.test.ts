@@ -6,30 +6,35 @@ const mockWriteServerConfiguration = jest.fn();
 const mockClearServerConfiguration = jest.fn();
 
 jest.mock("next/navigation", () => ({
-  redirect: (url: string) => mockRedirect(url)
+  redirect: (url: string) => mockRedirect(url),
 }));
 
 jest.mock("next/cache", () => ({
-  revalidatePath: (path: string) => mockRevalidatePath(path)
+  revalidatePath: (path: string) => mockRevalidatePath(path),
 }));
 
 jest.mock("@/lib/server/core", () => ({
-  writeServerConfiguration: (...args: unknown[]) => mockWriteServerConfiguration(...args),
-  clearServerConfiguration: (...args: unknown[]) => mockClearServerConfiguration(...args)
+  writeServerConfiguration: (...args: unknown[]) =>
+    mockWriteServerConfiguration(...args),
+  clearServerConfiguration: (...args: unknown[]) =>
+    mockClearServerConfiguration(...args),
 }));
 
-import { clearConfigurationAction, updateConfigurationAction } from "@/app/config/actions";
+import {
+  clearConfigurationAction,
+  updateConfigurationAction,
+} from "@/app/config/actions";
 
 describe("config server actions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWriteServerConfiguration.mockReturnValue({
       path: "/tmp/.agent-memory/config.json",
-      values: { apiKey: "sk_test", assistantId: "asst_123" }
+      values: { apiKey: "sk_test", assistantId: "asst_123" },
     });
     mockClearServerConfiguration.mockReturnValue({
       path: "/tmp/.agent-memory/config.json",
-      deleted: true
+      deleted: true,
     });
   });
 
@@ -39,14 +44,14 @@ describe("config server actions", () => {
     invalidField.set("value", "x");
 
     await expect(updateConfigurationAction(invalidField)).rejects.toThrow(
-      "REDIRECT:/config?error=Unknown+configuration+field."
+      "REDIRECT:/config?error=Unknown+configuration+field.",
     );
 
     const emptyApiKey = new FormData();
     emptyApiKey.set("field", "apiKey");
     emptyApiKey.set("value", " ");
     await expect(updateConfigurationAction(emptyApiKey)).rejects.toThrow(
-      "REDIRECT:/config?error=API+key+cannot+be+empty."
+      "REDIRECT:/config?error=API+key+cannot+be+empty.",
     );
   });
 
@@ -56,9 +61,12 @@ describe("config server actions", () => {
     formData.set("value", "asst_999");
 
     await expect(updateConfigurationAction(formData)).rejects.toThrow(
-      "REDIRECT:/config?success=Memory+Bank+ID+saved."
+      "REDIRECT:/config?success=Memory+Bank+ID+saved.",
     );
-    expect(mockWriteServerConfiguration).toHaveBeenCalledWith({ assistantId: "asst_999" }, "local");
+    expect(mockWriteServerConfiguration).toHaveBeenCalledWith(
+      { assistantId: "asst_999" },
+      "local",
+    );
     expect(mockRevalidatePath).toHaveBeenCalledWith("/config");
   });
 
@@ -66,13 +74,13 @@ describe("config server actions", () => {
     const missingConfirm = new FormData();
     missingConfirm.set("confirm", "nope");
     await expect(clearConfigurationAction(missingConfirm)).rejects.toThrow(
-      "REDIRECT:/config?error=Type+CLEAR+to+confirm+configuration+reset."
+      "REDIRECT:/config?error=Type+CLEAR+to+confirm+configuration+reset.",
     );
 
     const confirmed = new FormData();
     confirmed.set("confirm", "CLEAR");
     await expect(clearConfigurationAction(confirmed)).rejects.toThrow(
-      "REDIRECT:/config?success=Local+configuration+cleared.+Effective+credentials+may+still+come+from+env%2Fglobal."
+      "REDIRECT:/config?success=Local+configuration+cleared.+Effective+credentials+may+still+come+from+env%2Fglobal.",
     );
     expect(mockClearServerConfiguration).toHaveBeenCalledWith("local");
     expect(mockRevalidatePath).toHaveBeenCalledWith("/config");

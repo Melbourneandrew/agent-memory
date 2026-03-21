@@ -1,8 +1,17 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { readLocalServerConfiguration, resolveServerConfiguration } from "@/lib/server/core";
+import {
+  readLocalServerConfiguration,
+  resolveServerConfiguration,
+} from "@/lib/server/core";
 
 import { updateConfigurationAction } from "./actions";
 import { ClearConfigurationForm } from "./clear-config-form";
@@ -24,7 +33,9 @@ function maskApiKey(apiKey: string | null): string {
   return `********${visible}`;
 }
 
-export default async function ConfigurationPage({ searchParams }: ConfigurationPageProps) {
+export default async function ConfigurationPage({
+  searchParams,
+}: ConfigurationPageProps) {
   const params = await searchParams;
   const localConfig = readLocalServerConfiguration();
   const configuration = resolveServerConfiguration();
@@ -38,8 +49,9 @@ export default async function ConfigurationPage({ searchParams }: ConfigurationP
         <Alert>
           <AlertTitle>Authentication required</AlertTitle>
           <AlertDescription>
-            Set your API key below, or run <code>agent-memory config set api-key &lt;your-api-key&gt;</code>{" "}
-            in your terminal.
+            Set your API key below, or run{" "}
+            <code>agent-memory config set api-key &lt;your-api-key&gt;</code> in
+            your terminal.
           </AlertDescription>
         </Alert>
       ) : null}
@@ -61,18 +73,26 @@ export default async function ConfigurationPage({ searchParams }: ConfigurationP
           <CardHeader>
             <CardTitle>API Key</CardTitle>
             <CardDescription>
-              Stored in local workspace config for this project. Effective runtime config can still
-              include environment/global fallbacks.
+              Stored in local workspace config for this project. Effective
+              runtime config can still include environment/global fallbacks.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="font-mono text-sm">{maskApiKey(localConfig.values.apiKey)}</p>
+            <p className="font-mono text-sm">
+              {maskApiKey(localConfig.values.apiKey)}
+            </p>
             <p className="text-xs text-muted-foreground">
-              Effective API key status: {hasApiKey ? "Configured" : "Not configured"}
+              Effective API key status:{" "}
+              {hasApiKey ? "Configured" : "Not configured"}
             </p>
             <form action={updateConfigurationAction} className="space-y-2">
               <input type="hidden" name="field" value="apiKey" />
-              <Input name="value" type="password" placeholder="sk-..." autoComplete="off" />
+              <Input
+                name="value"
+                type="password"
+                placeholder="sk-..."
+                autoComplete="off"
+              />
               <Button type="submit">Save API key</Button>
             </form>
           </CardContent>
@@ -81,15 +101,18 @@ export default async function ConfigurationPage({ searchParams }: ConfigurationP
           <CardHeader>
             <CardTitle>Memory Bank ID</CardTitle>
             <CardDescription>
-              Backboard assistant ID used to group memories in the active workspace.
+              Backboard assistant ID used to group memories in the active
+              workspace.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="font-mono text-sm">
-              {localConfig.values.assistantId ?? "Will be auto-created on first memory operation."}
+              {localConfig.values.assistantId ??
+                "Will be auto-created on first memory operation."}
             </p>
             <p className="text-xs text-muted-foreground">
-              Effective Memory Bank ID: {configuration.assistantId ?? "Not configured"}
+              Effective Memory Bank ID:{" "}
+              {configuration.assistantId ?? "Not configured"}
             </p>
             <form action={updateConfigurationAction} className="space-y-2">
               <input type="hidden" name="field" value="assistantId" />
@@ -106,7 +129,8 @@ export default async function ConfigurationPage({ searchParams }: ConfigurationP
         <CardHeader>
           <CardTitle>Reset Configuration</CardTitle>
           <CardDescription>
-            Clear local configuration when switching credentials or resetting your workspace setup.
+            Clear local configuration when switching credentials or resetting
+            your workspace setup.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -123,4 +147,3 @@ function firstValue(value: string | string[] | undefined): string | null {
   }
   return value ?? null;
 }
-

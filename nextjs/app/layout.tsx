@@ -33,14 +33,23 @@ export default function RootLayout({
         <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-6 md:px-8">
           <header className="mb-4">
             <div className="flex items-center justify-between">
-              <Link href="/memories" className="text-lg font-semibold tracking-tight">
+              <Link
+                href="/memories"
+                className="text-lg font-semibold tracking-tight"
+              >
                 Agent Memory
               </Link>
               <nav className="flex items-center gap-5 text-sm">
-                <Link href="/memories" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  href="/memories"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   Memories
                 </Link>
-                <Link href="/config" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  href="/config"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   Configuration
                 </Link>
               </nav>

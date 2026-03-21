@@ -10,28 +10,42 @@ function AlertDialog({ ...props }: AlertDialogPrimitive.AlertDialogProps) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
 }
 
-function AlertDialogTrigger({ ...props }: AlertDialogPrimitive.AlertDialogTriggerProps) {
-  return <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />;
+function AlertDialogTrigger({
+  ...props
+}: AlertDialogPrimitive.AlertDialogTriggerProps) {
+  return (
+    <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
+  );
 }
 
-function AlertDialogPortal({ ...props }: AlertDialogPrimitive.AlertDialogPortalProps) {
-  return <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />;
+function AlertDialogPortal({
+  ...props
+}: AlertDialogPrimitive.AlertDialogPortalProps) {
+  return (
+    <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />
+  );
 }
 
-function AlertDialogOverlay({ className, ...props }: AlertDialogPrimitive.AlertDialogOverlayProps) {
+function AlertDialogOverlay({
+  className,
+  ...props
+}: AlertDialogPrimitive.AlertDialogOverlayProps) {
   return (
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
       className={cn(
         "fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out",
-        className
+        className,
       )}
       {...props}
     />
   );
 }
 
-function AlertDialogContent({ className, ...props }: AlertDialogPrimitive.AlertDialogContentProps) {
+function AlertDialogContent({
+  className,
+  ...props
+}: AlertDialogPrimitive.AlertDialogContentProps) {
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
@@ -39,7 +53,7 @@ function AlertDialogContent({ className, ...props }: AlertDialogPrimitive.AlertD
         data-slot="alert-dialog-content"
         className={cn(
           "fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out sm:rounded-lg",
-          className
+          className,
         )}
         {...props}
       />
@@ -47,20 +61,37 @@ function AlertDialogContent({ className, ...props }: AlertDialogPrimitive.AlertD
   );
 }
 
-function AlertDialogHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("flex flex-col gap-2 text-center sm:text-left", className)} {...props} />;
-}
-
-function AlertDialogFooter({ className, ...props }: React.ComponentProps<"div">) {
+function AlertDialogHeader({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
+      className={cn("flex flex-col gap-2 text-center sm:text-left", className)}
       {...props}
     />
   );
 }
 
-function AlertDialogTitle({ className, ...props }: AlertDialogPrimitive.AlertDialogTitleProps) {
+function AlertDialogFooter({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function AlertDialogTitle({
+  className,
+  ...props
+}: AlertDialogPrimitive.AlertDialogTitleProps) {
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
@@ -83,7 +114,10 @@ function AlertDialogDescription({
   );
 }
 
-function AlertDialogAction({ className, ...props }: AlertDialogPrimitive.AlertDialogActionProps) {
+function AlertDialogAction({
+  className,
+  ...props
+}: AlertDialogPrimitive.AlertDialogActionProps) {
   return (
     <AlertDialogPrimitive.Action
       className={cn(buttonVariants(), className)}
@@ -93,7 +127,10 @@ function AlertDialogAction({ className, ...props }: AlertDialogPrimitive.AlertDi
   );
 }
 
-function AlertDialogCancel({ className, ...props }: AlertDialogPrimitive.AlertDialogCancelProps) {
+function AlertDialogCancel({
+  className,
+  ...props
+}: AlertDialogPrimitive.AlertDialogCancelProps) {
   return (
     <AlertDialogPrimitive.Cancel
       className={cn(buttonVariants({ variant: "outline" }), className)}
@@ -114,5 +151,5 @@ export {
   AlertDialogOverlay,
   AlertDialogPortal,
   AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTrigger,
 };

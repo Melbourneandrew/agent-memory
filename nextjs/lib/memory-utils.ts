@@ -20,7 +20,10 @@ export function formatTimestamp(value: string): string {
   return date.toLocaleString();
 }
 
-export function parsePositiveInt(raw: string | undefined, fallback: number): number {
+export function parsePositiveInt(
+  raw: string | undefined,
+  fallback: number,
+): number {
   if (!raw) {
     return fallback;
   }
@@ -32,4 +35,3 @@ export function parsePositiveInt(raw: string | undefined, fallback: number): num
 
   return value;
 }
-

@@ -11,7 +11,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +31,8 @@ export function ClearConfigurationForm() {
         <AlertDialogHeader>
           <AlertDialogTitle>Reset local configuration?</AlertDialogTitle>
           <AlertDialogDescription>
-            Clearing local config removes stored API key and Memory Bank ID for this workspace.
-            Type <strong>CLEAR</strong> to confirm.
+            Clearing local config removes stored API key and Memory Bank ID for
+            this workspace. Type <strong>CLEAR</strong> to confirm.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <form action={clearConfigurationAction} className="space-y-4">
@@ -46,7 +46,11 @@ export function ClearConfigurationForm() {
           <AlertDialogFooter>
             <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button type="submit" variant="destructive" disabled={!isConfirmed}>
+              <Button
+                type="submit"
+                variant="destructive"
+                disabled={!isConfirmed}
+              >
                 Clear configuration
               </Button>
             </AlertDialogAction>
