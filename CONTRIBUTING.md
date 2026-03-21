@@ -52,14 +52,18 @@ Run from the repo root without installing globally:
 npm exec --workspace agent-memory -- agent-memory --help
 ```
 
-Optional global link while developing:
+Optional global link while developing (so you can type `agent-memory` in any terminal):
 
 ```bash
 npm run build --workspace agent-memory
 cd cli && npm link
 ```
 
-Remove with `npm unlink -g agent-memory`. Manual testing with real Backboard: [`docs/configuration.md`](docs/configuration.md).
+Remove with `npm unlink -g agent-memory`.
+
+**Why `agent-memory` is “command not found”:** `npm link agent-memory` (run from some _other_ project) only links that project’s `node_modules` to the globally registered package. It does **not** install the `agent-memory` executable. You must run **`npm link` once from inside `cli/`** (after `npm run build`) so npm registers the `bin` in your global prefix. `npm link agent-memory` from the monorepo root does not do that either.
+
+If the binary exists but the shell still cannot find it, ensure your global npm bin directory is on `PATH` (often `$(npm config get prefix)/bin`; Homebrew Node on macOS typically already includes it). Manual testing with real Backboard: [`docs/configuration.md`](docs/configuration.md).
 
 ## Web UI (`@agent-memory/nextjs`)
 
