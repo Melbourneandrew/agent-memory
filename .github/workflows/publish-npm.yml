@@ -34,27 +34,27 @@ jobs:
       - name: Test
         run: npm run test
 
-      - name: Publish workspace packages
-        if: env.HAS_NPM_TOKEN == 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Determine publish requirement
+        id: publish_check
         run: |
           set -euo pipefail
-          publish_if_new() {
-            local workspace="$1"
-            local package_name package_version
-            package_name=$(npm pkg get name --workspace "$workspace" | tr -d '"')
-            package_version=$(npm pkg get version --workspace "$workspace" | tr -d '"')
-            if npm view "${package_name}@${package_version}" version >/dev/null 2>&1; then
-              echo "Package ${package_name}@${package_version} already exists on npm; skipping."
-            else
-              echo "Publishing ${package_name}@${package_version}..."
-              npm publish --workspace "$workspace" --access public
-            fi
-          }
-          publish_if_new "@agent-memory-cli/core"
-          publish_if_new "agent-memory-cli"
+          PACKAGE_NAME=$(npm pkg get name | tr -d '"')
+          PACKAGE_VERSION=$(npm pkg get version | tr -d '"')
+
+          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            echo "Package ${PACKAGE_NAME}@${PACKAGE_VERSION} already exists on NPM; skipping publish."
+          else
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+            echo "Package ${PACKAGE_NAME}@${PACKAGE_VERSION} is new; proceeding to publish."
+          fi
+
+      - name: Publish package
+        if: steps.publish_check.outputs.should_publish == 'true' && env.HAS_NPM_TOKEN == 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Skip publish when NPM token missing
-        if: env.HAS_NPM_TOKEN != 'true'
+        if: steps.publish_check.outputs.should_publish == 'true' && env.HAS_NPM_TOKEN != 'true'
         run: echo "NPM_TOKEN secret is not configured; skipping publish."

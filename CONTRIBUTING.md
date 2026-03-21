@@ -38,9 +38,9 @@ npm run build --workspace @agent-memory-cli/core
 
 This package is published to npm. More detail: [`core/README.md`](core/README.md).
 
-## CLI (`agent-memory-cli`)
+## CLI (workspace `@agent-memory-cli/cli`, published as `agent-memory-cli`)
 
-The `agent-memory` command-line tool (npm package `agent-memory-cli`); dispatches subcommands and calls `@agent-memory-cli/core`.
+The `agent-memory` command-line tool is the `bin` of the **root** npm package `agent-memory-cli`. The CLI workspace bundles `cli/src` plus `@agent-memory-cli/core` with esbuild into `cli/dist/bin.js`.
 
 - **Source:** `cli/src/` — `bin.ts`, `cli.ts`, `commands/`, `utils/`
 - **Tests:** `cli/tests/integration/*.test.ts` — mock Backboard with **nock**, use temp dirs for config; no live API calls in CI
@@ -49,19 +49,21 @@ The `agent-memory` command-line tool (npm package `agent-memory-cli`); dispatche
 Run from the repo root without installing globally:
 
 ```bash
-npm exec --workspace agent-memory-cli -- agent-memory --help
+npx agent-memory --help
 ```
+
+(`agent-memory` comes from the root package `bin`; run from the repo root after `npm run build`.)
 
 Optional global link while developing (so you can type `agent-memory` in any terminal):
 
 ```bash
-npm run build --workspace agent-memory-cli
-cd cli && npm link
+npm run build
+npm link
 ```
 
 Remove with `npm unlink -g agent-memory-cli`.
 
-**Why `agent-memory` is “command not found”:** `npm link agent-memory-cli` (run from some _other_ project) only links that project’s `node_modules` to the globally registered package. It does **not** install the `agent-memory` executable. You must run **`npm link` once from inside `cli/`** (after `npm run build`) so npm registers the `bin` in your global prefix. `npm link agent-memory-cli` from the monorepo root does not do that either.
+**Why `agent-memory` is “command not found”:** Link the **root** package (`npm link` from the repository root after `npm run build`) so npm registers the `agent-memory` binary from the root `package.json` `bin` field.
 
 If the binary exists but the shell still cannot find it, ensure your global npm bin directory is on `PATH` (often `$(npm config get prefix)/bin`; Homebrew Node on macOS typically already includes it). Manual testing with real Backboard: [`docs/configuration.md`](docs/configuration.md).
 

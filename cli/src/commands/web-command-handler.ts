@@ -236,13 +236,21 @@ async function checkPortAvailability(port: number): Promise<PortAvailabilityResu
 function resolveWebAppDirectory(cwd: string): string {
   const candidates = [
     resolve(cwd, "nextjs"),
-    resolve(__dirname, "../../../nextjs"),
-    resolve(__dirname, "../../nextjs")
+    // Bundled CLI (single file in cli/dist): __dirname is cli/dist
+    resolve(__dirname, "..", "..", "nextjs"),
+    // Unbundled / tests: __dirname is cli/dist/commands
+    resolve(__dirname, "..", "..", "..", "nextjs")
   ];
 
+  const seen = new Set<string>();
   for (const candidate of candidates) {
-    if (existsSync(join(candidate, "package.json"))) {
-      return candidate;
+    const normalized = resolve(candidate);
+    if (seen.has(normalized)) {
+      continue;
+    }
+    seen.add(normalized);
+    if (existsSync(join(normalized, "package.json"))) {
+      return normalized;
     }
   }
 
@@ -252,7 +260,7 @@ function resolveWebAppDirectory(cwd: string): string {
 function resolveNextBinPath(cwd: string): string {
   try {
     return require.resolve("next/dist/bin/next", {
-      paths: [cwd, __dirname]
+      paths: [cwd, resolve(cwd, ".."), resolve(cwd, "..", "..")]
     });
   } catch {
     throw new CliUsageError("Next.js runtime is not available. Reinstall the CLI package.");

@@ -22,17 +22,17 @@
 ## Build and Quality Gates
 
 - `npm run build --workspace @agent-memory-cli/core`
-- `npm run build --workspace agent-memory-cli`
+- `npm run build --workspace @agent-memory-cli/cli`
 - `npm run test --workspace @agent-memory-cli/core`
-- `npm run test --workspace agent-memory-cli`
+- `npm run test --workspace @agent-memory-cli/cli`
 - `npm run lint --workspace @agent-memory-cli/core`
-- `npm run lint --workspace agent-memory-cli`
+- `npm run lint --workspace @agent-memory-cli/cli`
 - `npm run format --workspace @agent-memory-cli/core` (when formatting changes are required)
-- `npm run format --workspace agent-memory-cli` (when formatting changes are required)
+- `npm run format --workspace @agent-memory-cli/cli` (when formatting changes are required)
 
 ## CLI Building Conventions
 
-- Keep `agent-memory` bin mapping pointed at compiled `dist/bin.js`.
+- Keep `agent-memory` bin mapping pointed at bundled `cli/dist/bin.js` (esbuild); the published npm package is the repo root `agent-memory-cli`.
 - Preserve shebang in CLI entrypoint (`#!/usr/bin/env node`) for global installs.
 - Keep command parsing thin; business logic should stay in `@agent-memory-cli/core`.
 

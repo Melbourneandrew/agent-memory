@@ -25,7 +25,7 @@ Use this guide for all unit and integration tests in this repository.
 ## Execution
 
 - Run `npm run test --workspace @agent-memory-cli/core` for package-level tests.
-- Run `npm run test --workspace agent-memory-cli` for CLI integration tests.
+- Run `npm run test --workspace @agent-memory-cli/cli` for CLI integration tests.
 - Use `npm run test` from repo root before final verification.
 
 ## CLI Integration Testing Patterns

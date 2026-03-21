@@ -1,18 +1,11 @@
 {
-  "name": "agent-memory-cli",
+  "name": "@agent-memory-cli/cli",
   "version": "0.1.0",
-  "description": "Command-line interface for Agent Memory.",
+  "private": true,
+  "description": "Command-line interface for Agent Memory (built into the root npm package).",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "bin": {
-    "agent-memory": "dist/bin.js"
-  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -rf dist && esbuild src/bin.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/bin.js --sourcemap",
     "test": "jest --runInBand",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"*.{json,js,md}\""
@@ -20,14 +13,12 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "dependencies": {
-    "@agent-memory-cli/core": "0.1.0"
-  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
+    "esbuild": "^0.25.0",
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
     "jest": "^30.2.0",
