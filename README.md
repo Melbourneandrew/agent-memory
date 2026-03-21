@@ -2,6 +2,10 @@
 
 **Remember things for your AI assistant** — save notes, search them later, and keep context across sessions. Works from the terminal or in your browser, backed by [Backboard](https://backboard.io).
 
+```bash
+npm install -g @melbourneandrew/agent-memory-cli
+```
+
 [![npm](https://img.shields.io/npm/v/@melbourneandrew%2Fagent-memory-cli?style=flat-square&logo=npm)](https://www.npmjs.com/package/@melbourneandrew/agent-memory-cli)
 [![License](https://img.shields.io/badge/license-MIT-555?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Node](https://img.shields.io/node/v/@melbourneandrew%2Fagent-memory-cli?style=flat-square&logo=nodedotjs&label=Node)](https://nodejs.org/)
