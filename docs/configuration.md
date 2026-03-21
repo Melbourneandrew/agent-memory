@@ -22,7 +22,9 @@ You can set it explicitly:
 agent-memory config set assistant-id <assistant-id>
 ```
 
-Or let Agent Memory create one automatically on your first `add` operation if it is missing.
+Or let Agent Memory create one automatically on your first successful `add` operation if it is missing.
+
+That automatic path is only used by `add`. Commands such as `search`, `get`, `list`, `update`, `delete`, and `stats` require an assistant ID to already exist. `status` is the exception: it only needs an API key plus the operation ID.
 
 ## View Current Configuration
 

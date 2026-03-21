@@ -1,6 +1,6 @@
 # @agent-memory-cli/core
 
-**Workspace package (not published on its own).** It is bundled into the root [`agent-memory-cli`](https://www.npmjs.com/package/agent-memory-cli) npm release and consumed by the Next.js app at build time.
+**Workspace package (not published on its own).** It is bundled into the root [`@melbourneandrew/agent-memory-cli`](https://www.npmjs.com/package/@melbourneandrew/agent-memory-cli) npm release and consumed by the Next.js app at build time.
 
 Shared TypeScript core library for Agent Memory runtime behavior.
 

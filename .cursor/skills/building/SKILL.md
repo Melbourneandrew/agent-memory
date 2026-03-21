@@ -32,7 +32,7 @@
 
 ## CLI Building Conventions
 
-- Keep `agent-memory` bin mapping pointed at bundled `cli/dist/bin.js` (esbuild); the published npm package is the repo root `agent-memory-cli`.
+- Keep `agent-memory` bin mapping pointed at bundled `cli/dist/bin.js` (esbuild); the published npm package is the repo root `@melbourneandrew/agent-memory-cli`.
 - Preserve shebang in CLI entrypoint (`#!/usr/bin/env node`) for global installs.
 - Keep command parsing thin; business logic should stay in `@agent-memory-cli/core`.
 

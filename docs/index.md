@@ -15,7 +15,7 @@ AI agents often lose context between sessions. Agent Memory provides a simple in
 ## Quick Start
 
 ```bash
-npm install -g agent-memory-cli
+npm install -g @melbourneandrew/agent-memory-cli
 agent-memory --version
 agent-memory config set api-key <your-api-key>
 agent-memory add "User prefers dark mode and short summaries."

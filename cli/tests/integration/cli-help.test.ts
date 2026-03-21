@@ -6,7 +6,7 @@ describe("CLI help command", () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("agent-memory <command> [options]");
-    expect(result.stdout).toContain("config set <key> <value>");
+    expect(result.stdout).toContain("config set <api-key|assistant-id> <value>");
     expect(result.stdout).toContain("web [--port <n>]");
     expect(result.stderr).toBe("");
   });

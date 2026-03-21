@@ -64,7 +64,7 @@ const addMemoryHandler = async (
 ): Promise<void> => {
   const parsed = parseFormatAndPositionals(args);
   if (parsed.positionals.length > 1) {
-    throw new CliUsageError("Usage: agent-memory add [content] [--format json]");
+    throw new CliUsageError("Usage: agent-memory add [content] [--format plain|json]");
   }
 
   const contentFromArg = parsed.positionals[0];
@@ -122,7 +122,7 @@ const getMemoryHandler = async (
 ): Promise<void> => {
   const parsed = parseFormatAndPositionals(args);
   if (parsed.positionals.length !== 1) {
-    throw new CliUsageError("Usage: agent-memory get <memory-id> [--format json]");
+    throw new CliUsageError("Usage: agent-memory get <memory-id> [--format plain|json]");
   }
 
   const memoryId = parsed.positionals[0];
@@ -187,7 +187,9 @@ const updateMemoryHandler = async (
 ): Promise<void> => {
   const parsed = parseFormatAndPositionals(args);
   if (parsed.positionals.length < 1 || parsed.positionals.length > 2) {
-    throw new CliUsageError("Usage: agent-memory update <memory-id> [content] [--format json]");
+    throw new CliUsageError(
+      "Usage: agent-memory update <memory-id> [content] [--format plain|json]"
+    );
   }
 
   const memoryId = parsed.positionals[0];
@@ -223,7 +225,7 @@ const deleteMemoryHandler = async (
 ): Promise<void> => {
   const parsed = parseFormatAndPositionals(args);
   if (parsed.positionals.length !== 1) {
-    throw new CliUsageError("Usage: agent-memory delete <memory-id> [--format json]");
+    throw new CliUsageError("Usage: agent-memory delete <memory-id> [--format plain|json]");
   }
 
   const memoryId = parsed.positionals[0];
@@ -318,7 +320,9 @@ function parseSearchArgs(args: string[]): {
   }
 
   if (positionals.length !== 1) {
-    throw new CliUsageError("Usage: agent-memory search <query> [--limit <n>] [--format json]");
+    throw new CliUsageError(
+      "Usage: agent-memory search <query> [--limit <n>] [--format plain|json]"
+    );
   }
 
   const query = positionals[0].trim();
@@ -363,7 +367,7 @@ function parseListArgs(args: string[]): { page: number; pageSize: number; format
     }
 
     throw new CliUsageError(
-      "Usage: agent-memory list [--page <n>] [--page-size <n>] [--format json]"
+      "Usage: agent-memory list [--page <n>] [--page-size <n>] [--format plain|json]"
     );
   }
 

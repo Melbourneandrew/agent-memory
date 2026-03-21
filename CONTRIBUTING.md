@@ -38,9 +38,9 @@ npm run build --workspace @agent-memory-cli/core
 
 This package is published to npm. More detail: [`core/README.md`](core/README.md).
 
-## CLI (workspace `@agent-memory-cli/cli`, published as `agent-memory-cli`)
+## CLI (workspace `@agent-memory-cli/cli`, published as `@melbourneandrew/agent-memory-cli`)
 
-The `agent-memory` command-line tool is the `bin` of the **root** npm package `agent-memory-cli`. The CLI workspace bundles `cli/src` plus `@agent-memory-cli/core` with esbuild into `cli/dist/bin.js`.
+The `agent-memory` command-line tool is the `bin` of the **root** npm package `@melbourneandrew/agent-memory-cli`. The CLI workspace bundles `cli/src` plus `@agent-memory-cli/core` with esbuild into `cli/dist/bin.js`.
 
 - **Source:** `cli/src/` — `bin.ts`, `cli.ts`, `commands/`, `utils/`
 - **Tests:** `cli/tests/integration/*.test.ts` — mock Backboard with **nock**, use temp dirs for config; no live API calls in CI
@@ -61,7 +61,7 @@ npm run build
 npm link
 ```
 
-Remove with `npm unlink -g agent-memory-cli`.
+Remove with `npm unlink -g @melbourneandrew/agent-memory-cli`.
 
 **Why `agent-memory` is “command not found”:** Link the **root** package (`npm link` from the repository root after `npm run build`) so npm registers the `agent-memory` binary from the root `package.json` `bin` field.
 

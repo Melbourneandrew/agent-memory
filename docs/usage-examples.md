@@ -1,6 +1,6 @@
 # Usage Examples
 
-These examples assume you have configured a [Backboard](https://backboard.io) API key (see [Configuration](configuration.md)).
+These examples assume you have configured a [Backboard](https://backboard.io) API key (see [Configuration](configuration.md)). Commands that read from a memory bank such as `search`, `list`, and `stats` also need an assistant ID. You can set one explicitly or let the first successful `agent-memory add` create it for you.
 
 ## Add Memories
 
@@ -52,6 +52,7 @@ agent-memory status op_456 --format json
 agent-memory config set api-key <your-api-key>
 
 # 2) Add memory
+#    (creates assistant-id automatically on first run if needed)
 agent-memory add "User prefers concise bullet summaries."
 
 # 3) Search memory

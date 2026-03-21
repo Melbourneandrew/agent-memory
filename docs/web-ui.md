@@ -8,6 +8,8 @@ Agent Memory includes a local browser interface powered by Next.js.
 agent-memory web
 ```
 
+`agent-memory web` requires an API key to be configured before launch.
+
 Default URL:
 
 ```text
@@ -28,6 +30,8 @@ The Web UI uses the same configuration sources as the CLI to talk to [Backboard]
 - assistant ID (memory bank ID)
 
 Any configuration changes in the Web UI are immediately available to CLI commands.
+
+The command itself only requires the API key. The UI can create an assistant ID automatically the first time you add a memory, but search, list, detail, update, delete, and stats views need an assistant ID to already exist.
 
 ## Features
 

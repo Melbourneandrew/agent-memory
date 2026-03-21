@@ -1,6 +1,6 @@
 # `@agent-memory-cli/cli` (workspace)
 
-TypeScript CLI for Agent Memory. **Publishing:** this workspace is not published on its own. The repository root package [`agent-memory-cli`](../package.json) is the single npm release: it ships this CLI (bundled with core via esbuild), the built Next.js web UI under `nextjs/`, and runtime dependencies.
+TypeScript CLI for Agent Memory. **Publishing:** this workspace is not published on its own. The repository root package [`@melbourneandrew/agent-memory-cli`](../package.json) is the single npm release: it ships this CLI (bundled with core via esbuild), the built Next.js web UI under `nextjs/`, and runtime dependencies.
 
 ## Package layout
 

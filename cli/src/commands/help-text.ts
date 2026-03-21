@@ -5,16 +5,16 @@ Global flags:
   --version, -v      Show CLI version
 
 Commands:
-  add [content]                  Add a memory (or read from stdin)
-  search <query> [--limit <n>]   Search memories
-  get <memory-id>                Get a memory by ID
-  list [--page <n>] [--page-size <n>] List memories
-  update <memory-id> [content]   Update a memory (or read from stdin)
-  delete <memory-id>             Delete a memory
-  config set <key> <value>       Set configuration value
-  config show                    Show effective configuration
-  config clear                   Clear configuration file
-  stats [--format json]          Show memory statistics
-  status <operation-id> [--format json] Show operation status
-  web [--port <n>]               Launch web UI
+  add [content] [--format plain|json]         Add a memory (or read from stdin)
+  search <query> [--limit <n>] [--format plain|json] Search memories
+  get <memory-id> [--format plain|json]       Get a memory by ID
+  list [--page <n>] [--page-size <n>] [--format plain|json] List memories
+  update <memory-id> [content] [--format plain|json] Update a memory (or read from stdin)
+  delete <memory-id> [--format plain|json]    Delete a memory
+  config set <api-key|assistant-id> <value>   Set configuration value
+  config show [--global|--local]              Show effective configuration
+  config clear [--global|--local]             Clear configuration file
+  stats [--format plain|json]                 Show memory statistics
+  status <operation-id> [--format plain|json] Show operation status
+  web [--port <n>]                            Launch web UI
 `;

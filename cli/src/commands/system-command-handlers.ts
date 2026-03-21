@@ -38,7 +38,7 @@ const statsHandler = async (
 ): Promise<void> => {
   const parsed = parseFormatAndPositionals(args);
   if (parsed.positionals.length > 0) {
-    throw new CliUsageError("Usage: agent-memory stats [--format json]");
+    throw new CliUsageError("Usage: agent-memory stats [--format plain|json]");
   }
 
   const { apiKey, assistantId } = resolveStatsIdentity(dependencies, cwd);
@@ -73,7 +73,7 @@ const statusHandler = async (
 ): Promise<void> => {
   const parsed = parseFormatAndPositionals(args);
   if (parsed.positionals.length !== 1) {
-    throw new CliUsageError("Usage: agent-memory status <operation-id> [--format json]");
+    throw new CliUsageError("Usage: agent-memory status <operation-id> [--format plain|json]");
   }
 
   const operationId = parsed.positionals[0].trim();

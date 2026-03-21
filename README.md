@@ -2,9 +2,9 @@
 
 **Remember things for your AI assistant** — save notes, search them later, and keep context across sessions. Works from the terminal or in your browser, backed by [Backboard](https://backboard.io).
 
-[![npm](https://img.shields.io/npm/v/agent-memory-cli?style=flat-square&logo=npm)](https://www.npmjs.com/package/agent-memory-cli)
+[![npm](https://img.shields.io/npm/v/@melbourneandrew%2Fagent-memory-cli?style=flat-square&logo=npm)](https://www.npmjs.com/package/@melbourneandrew/agent-memory-cli)
 [![License](https://img.shields.io/badge/license-MIT-555?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Node](https://img.shields.io/node/v/agent-memory-cli?style=flat-square&logo=nodedotjs&label=Node)](https://nodejs.org/)
+[![Node](https://img.shields.io/node/v/@melbourneandrew%2Fagent-memory-cli?style=flat-square&logo=nodedotjs&label=Node)](https://nodejs.org/)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-222?style=flat-square&logo=github)](https://melbourneandrew.github.io/agent-memory/)
 [![CI](https://img.shields.io/github/actions/workflow/status/Melbourneandrew/agent-memory/pr-validation.yml?branch=main&style=flat-square&logo=github&label=CI)](https://github.com/Melbourneandrew/agent-memory/actions)
 

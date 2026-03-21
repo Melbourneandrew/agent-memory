@@ -1,6 +1,6 @@
 # Command Reference
 
-Memory and system commands call the [Backboard](https://backboard.io) API using your configured API key. See [Configuration](configuration.md) and [Backboard documentation](https://docs.backboard.com) for setup details.
+Memory and system commands call the [Backboard](https://backboard.io) API using your configured API key. Commands that work with a memory bank also need an assistant ID. `agent-memory add` can create one automatically if it is missing; `agent-memory status` only needs the API key. See [Configuration](configuration.md) and [Backboard documentation](https://docs.backboard.com) for setup details.
 
 ## Global Flags
 
@@ -9,6 +9,8 @@ Memory and system commands call the [Backboard](https://backboard.io) API using 
 
 ## Memory Operations
 
+All memory commands require an API key. `add` creates and saves an assistant ID automatically if one is missing. `search`, `get`, `list`, `update`, and `delete` require an assistant ID to already exist.
+
 ### add
 
 ```bash
@@ -16,6 +18,8 @@ agent-memory add [content] [--format plain|json]
 ```
 
 Adds memory content. If `content` is omitted, reads from standard input.
+
+If no assistant ID is configured yet, this command creates one automatically and saves it before adding the memory.
 
 Required parameters:
 
@@ -152,18 +156,23 @@ agent-memory delete mem_123
 ### stats
 
 ```bash
-agent-memory stats [--format json]
+agent-memory stats [--format plain|json]
 ```
 
-Displays memory usage stats.
+Displays memory usage stats for the configured memory bank.
 
 Required parameters:
 
 - none
 
+Requires configuration:
+
+- API key
+- assistant ID (or one created by a previous `add`)
+
 Optional parameters:
 
-- `--format json` (default output is plain text)
+- `--format plain|json`
 
 Example:
 
@@ -174,7 +183,7 @@ agent-memory stats --format json
 ### status
 
 ```bash
-agent-memory status <operation-id> [--format json]
+agent-memory status <operation-id> [--format plain|json]
 ```
 
 Displays async operation status by operation ID.
@@ -185,7 +194,7 @@ Required parameters:
 
 Optional parameters:
 
-- `--format json` (default output is plain text)
+- `--format plain|json`
 
 Example:
 
@@ -277,6 +286,8 @@ agent-memory web [--port <n>]
 
 Starts the local Next.js web UI (default port `8090`) and attempts to open your default browser.
 
+This command requires a configured API key before launch. The UI can create an assistant ID later when you add your first memory.
+
 Example:
 
 ```bash
@@ -293,7 +304,7 @@ Optional parameters:
 
 ## Common Flags
 
-- `--format` supports `plain` and `json`
+- `--format` supports `plain` and `json` on memory, `stats`, and `status` commands
 - `--limit` sets max search results
 - `--page` sets current list page
 - `--page-size` sets list page size
