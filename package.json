@@ -3,6 +3,14 @@
   "version": "0.1.1",
   "description": "Agent Memory: CLI, shared runtime, and local web UI for Backboard.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Melbourneandrew/agent-memory.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Melbourneandrew/agent-memory/issues"
+  },
+  "homepage": "https://github.com/Melbourneandrew/agent-memory#readme",
   "private": false,
   "bin": {
     "agent-memory": "cli/dist/bin.js"
