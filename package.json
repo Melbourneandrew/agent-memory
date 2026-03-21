@@ -2,6 +2,14 @@
   "name": "@melbourneandrew/agent-memory-cli",
   "version": "0.1.1",
   "description": "Agent Memory: CLI, shared runtime, and local web UI for Backboard.",
+  "keywords": [
+    "cli",
+    "command-line",
+    "agent-memory",
+    "backboard",
+    "memory",
+    "nextjs"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
