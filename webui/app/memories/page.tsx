@@ -90,29 +90,33 @@ export default async function MemoriesPage({
 
   try {
     const client = createServerBackboardClient();
-    const [stats, memoryResponse] = await Promise.all([
-      client.getStats(configuration.assistantId),
-      isSearchMode
-        ? client.searchMemory(
-            configuration.assistantId,
-            query,
-            DEFAULT_PAGE_SIZE,
-          )
-        : client.listMemories(
-            configuration.assistantId,
-            page,
-            DEFAULT_PAGE_SIZE,
-          ),
-    ]);
+    const memoryResponse = isSearchMode
+      ? await client.searchMemory(
+          configuration.assistantId,
+          query,
+          DEFAULT_PAGE_SIZE,
+        )
+      : await client.listMemories(
+          configuration.assistantId,
+          page,
+          DEFAULT_PAGE_SIZE,
+        );
 
-    statsSummary = toStatsSummary(stats);
     memories = memoryResponse.memories;
     totalCount = memoryResponse.totalCount ?? memories.length;
+
+    try {
+      const stats = await client.getStats(configuration.assistantId);
+      statsSummary = toStatsSummary(stats);
+    } catch {
+      // Backboard may return 404 for memory stats while list/search still works.
+      statsSummary = null;
+    }
   } catch (error) {
     fetchErrorMessage = toUiErrorMessage(error);
   }
 
-  if (fetchErrorMessage || !statsSummary) {
+  if (fetchErrorMessage) {
     return (
       <section className="space-y-4">
         <Alert variant="destructive">
@@ -130,24 +134,26 @@ export default async function MemoriesPage({
 
   return (
     <section className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Memory Stats</CardTitle>
-          <CardDescription>
-            Current usage snapshot for this memory bank.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
-          <Badge variant="secondary">
-            Total memories: {statsSummary.totalMemories}
-          </Badge>
-          {statsSummary.extras.map((entry) => (
-            <Badge key={entry.key} variant="outline">
-              {entry.key}: {entry.value}
+      {statsSummary ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Memory Stats</CardTitle>
+            <CardDescription>
+              Current usage snapshot for this memory bank.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-2">
+            <Badge variant="secondary">
+              Total memories: {statsSummary.totalMemories}
             </Badge>
-          ))}
-        </CardContent>
-      </Card>
+            {statsSummary.extras.map((entry) => (
+              <Badge key={entry.key} variant="outline">
+                {entry.key}: {entry.value}
+              </Badge>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Card>
         <CardHeader className="space-y-3">

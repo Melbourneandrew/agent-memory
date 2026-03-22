@@ -76,14 +76,14 @@ describe("MemoriesPage server component", () => {
     expect(html).toContain("Memory content");
   });
 
-  test("renders error state when fetching fails", async () => {
+  test("renders error state when memory list fails", async () => {
     mockResolveServerConfiguration.mockReturnValue({
       apiKey: "sk_test",
       assistantId: "asst_123",
     });
     mockCreateServerBackboardClient.mockReturnValue({
-      getStats: jest.fn().mockRejectedValue(new Error("boom")),
-      listMemories: jest.fn(),
+      getStats: jest.fn().mockResolvedValue({ totalMemories: 0 }),
+      listMemories: jest.fn().mockRejectedValue(new Error("boom")),
       searchMemory: jest.fn(),
     });
 
@@ -91,6 +91,36 @@ describe("MemoriesPage server component", () => {
     const html = renderToStaticMarkup(element as ReactElement);
     expect(html).toContain("Could not load memories");
     expect(html).toContain("boom");
+  });
+
+  test("renders memories when stats fail but list succeeds", async () => {
+    mockResolveServerConfiguration.mockReturnValue({
+      apiKey: "sk_test",
+      assistantId: "asst_123",
+    });
+    mockCreateServerBackboardClient.mockReturnValue({
+      getStats: jest
+        .fn()
+        .mockRejectedValue(new Error("Memory stats not found")),
+      listMemories: jest.fn().mockResolvedValue({
+        memories: [
+          {
+            id: "mem_1",
+            content: "Still here",
+            createdAt: "2026-03-15T00:00:00.000Z",
+          },
+        ],
+        totalCount: 1,
+      }),
+      searchMemory: jest.fn(),
+    });
+
+    const element = await MemoriesPage({ searchParams: Promise.resolve({}) });
+    const html = renderToStaticMarkup(element as ReactElement);
+    expect(html).not.toContain("Could not load memories");
+    expect(html).not.toContain("Memory Stats");
+    expect(html).toContain("mem_1");
+    expect(html).toContain("Still here");
   });
 
   test("renders search results mode with clear action", async () => {
