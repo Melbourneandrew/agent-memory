@@ -13,7 +13,7 @@ node --version
 
 ## Install the CLI
 
-The npm package `@melbourneandrew/agent-memory-cli` is a single install: it includes the bundled CLI, shared runtime code, and a **prebuilt** Next.js output under `nextjs/.next` (produced when the package is built for publish — not checked into git).
+The npm package `@melbourneandrew/agent-memory-cli` is a single install: it includes the bundled CLI, shared runtime code, and a **prebuilt** Next.js output under `webui/.next` (produced when the package is built for publish — not checked into git).
 
 ```bash
 npm install -g @melbourneandrew/agent-memory-cli

@@ -154,8 +154,8 @@ function assertWebUiBuilt(appDirectory: string, fileExists: (path: string) => bo
   const buildIdPath = join(appDirectory, ".next", "BUILD_ID");
   if (!fileExists(buildIdPath)) {
     throw new CliUsageError(
-      "Web UI has no production build (missing nextjs/.next/BUILD_ID). " +
-        "From this repository run `npm run build` before `agent-memory web`, or use `npm run dev --workspace @agent-memory/nextjs` while developing the UI. " +
+      "Web UI has no production build (missing webui/.next/BUILD_ID). " +
+        "From this repository run `npm run build` before `agent-memory web`, or use `npm run dev --workspace @agent-memory/webui` while developing the UI. " +
         "The published npm package includes a prebuilt .next from CI; reinstall if files are missing."
     );
   }
@@ -240,11 +240,11 @@ async function checkPortAvailability(port: number): Promise<PortAvailabilityResu
 
 function resolveWebAppDirectory(cwd: string): string {
   const candidates = [
-    resolve(cwd, "nextjs"),
+    resolve(cwd, "webui"),
     // Bundled CLI (single file in cli/dist): __dirname is cli/dist
-    resolve(__dirname, "..", "..", "nextjs"),
+    resolve(__dirname, "..", "..", "webui"),
     // Unbundled / tests: __dirname is cli/dist/commands
-    resolve(__dirname, "..", "..", "..", "nextjs")
+    resolve(__dirname, "..", "..", "..", "webui")
   ];
 
   const seen = new Set<string>();

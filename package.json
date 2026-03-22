@@ -25,7 +25,7 @@
   },
   "files": [
     "cli/dist",
-    "nextjs"
+    "webui"
   ],
   "engines": {
     "node": ">=20.0.0"
@@ -48,15 +48,15 @@
   "workspaces": [
     "core",
     "cli",
-    "nextjs"
+    "webui"
   ],
   "scripts": {
-    "build": "npm run build --workspace @agent-memory-cli/core && npm run build --workspace @agent-memory/nextjs && npm run build --workspace @agent-memory-cli/cli",
-    "test": "npm run test --workspace @agent-memory-cli/core && npm run test --workspace @agent-memory-cli/cli && npm run test --workspace @agent-memory/nextjs --if-present",
-    "lint": "npm run lint --workspace @agent-memory-cli/core && npm run lint --workspace @agent-memory-cli/cli && npm run lint --workspace @agent-memory/nextjs",
+    "build": "npm run build --workspace @agent-memory-cli/core && npm run build --workspace @agent-memory/webui && npm run build --workspace @agent-memory-cli/cli",
+    "test": "npm run test --workspace @agent-memory-cli/core && npm run test --workspace @agent-memory-cli/cli && npm run test --workspace @agent-memory/webui --if-present",
+    "lint": "npm run lint --workspace @agent-memory-cli/core && npm run lint --workspace @agent-memory-cli/cli && npm run lint --workspace @agent-memory/webui",
     "lint:staged": "lint-staged",
-    "format": "npm run format --workspace @agent-memory-cli/core && npm run format --workspace @agent-memory-cli/cli && npm run format --workspace @agent-memory/nextjs --if-present",
-    "format:check": "prettier --check \"*.{json,md,yml,yaml}\" \"{core,cli,nextjs,docs,.github}/**/*.{ts,tsx,js,json,md,yml,yaml}\"",
+    "format": "npm run format --workspace @agent-memory-cli/core && npm run format --workspace @agent-memory-cli/cli && npm run format --workspace @agent-memory/webui --if-present",
+    "format:check": "prettier --check \"*.{json,md,yml,yaml}\" \"{core,cli,webui,docs,.github}/**/*.{ts,tsx,js,json,md,yml,yaml}\"",
     "precommit": "npm run lint:staged",
     "prepush": "npm run lint && npm run test && npm run build",
     "prepare": "node -e \"const fs=require('fs');const{execSync}=require('child_process');if(fs.existsSync('.git')){try{execSync('husky',{stdio:'inherit'})}catch(e){process.exit(0)}}\""
@@ -70,8 +70,8 @@
       "npm run lint --workspace @agent-memory-cli/cli -- --fix",
       "prettier --write"
     ],
-    "nextjs/**/*.{js,ts,tsx}": [
-      "npm run lint --workspace @agent-memory/nextjs --",
+    "webui/**/*.{js,ts,tsx}": [
+      "npm run lint --workspace @agent-memory/webui --",
       "prettier --write"
     ],
     "*.{json,md,yml,yaml}": "prettier --write",

@@ -1,5 +1,5 @@
 {
-  "name": "@agent-memory/nextjs",
+  "name": "@agent-memory/webui",
   "version": "0.1.0",
   "private": true,
   "scripts": {

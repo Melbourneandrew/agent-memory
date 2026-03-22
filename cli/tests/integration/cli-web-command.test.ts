@@ -21,7 +21,7 @@ class FakeChildProcess extends EventEmitter {
   }
 }
 
-const testAppDir = "/tmp/nextjs";
+const testAppDir = "/tmp/webui";
 const testBuildIdPath = join(testAppDir, ".next", "BUILD_ID");
 
 function fileExistsWhenBuilt(path: string): boolean {

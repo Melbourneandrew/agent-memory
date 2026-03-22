@@ -19,7 +19,7 @@ npm run build
 
 `npm run build` compiles TypeScript in `core` and `cli` and runs `next build` for the web app. The CLI reads compiled output from `cli/dist/`.
 
-**Shared dependency:** `cli` and `nextjs` both use `@agent-memory-cli/core`. After you change `core`, rebuild it (`npm run build --workspace @agent-memory-cli/core`) or run `npm run build` from the repo root so `dist/` stays in sync for dependents.
+**Shared dependency:** `cli` and `webui` both use `@agent-memory-cli/core`. After you change `core`, rebuild it (`npm run build --workspace @agent-memory-cli/core`) or run `npm run build` from the repo root so `dist/` stays in sync for dependents.
 
 ## `core` (`@agent-memory-cli/core`)
 
@@ -67,19 +67,19 @@ Remove with `npm unlink -g @melbourneandrew/agent-memory-cli`.
 
 If the binary exists but the shell still cannot find it, ensure your global npm bin directory is on `PATH` (often `$(npm config get prefix)/bin`; Homebrew Node on macOS typically already includes it). Manual testing with real Backboard: [`docs/configuration.md`](docs/configuration.md).
 
-## Web UI (`@agent-memory/nextjs`)
+## Web UI (`@agent-memory/webui`)
 
 Next.js App Router app (private workspace package; not published).
 
-- **Source:** `nextjs/app/` (routes), `nextjs/components/`, `nextjs/lib/`
-- **Tests:** `nextjs/tests/` — pages, server actions, and server-only boundaries; mock `@agent-memory-cli/core` at the server boundary (see [`.cursor/skills/testing/SKILL.md`](.cursor/skills/testing/SKILL.md))
+- **Source:** `webui/app/` (routes), `webui/components/`, `webui/lib/`
+- **Tests:** `webui/tests/` — pages, server actions, and server-only boundaries; mock `@agent-memory-cli/core` at the server boundary (see [`.cursor/skills/testing/SKILL.md`](.cursor/skills/testing/SKILL.md))
 - **Package scripts:** `dev`, `build`, `start`, `test`, `lint` — there is **no** `format` script here; formatting is enforced from the root (below)
 
 ```bash
-npm run dev --workspace @agent-memory/nextjs
+npm run dev --workspace @agent-memory/webui
 ```
 
-Production-style check: `npm run build --workspace @agent-memory/nextjs`.
+Production-style check: `npm run build --workspace @agent-memory/webui`.
 
 ## Testing
 
@@ -94,7 +94,7 @@ Runs all workspace test suites (what CI runs). Per-workspace commands are listed
 ```bash
 npm run lint
 npm run format        # Prettier in core + cli workspaces
-npm run format:check  # Prettier across repo (includes nextjs/, docs/, etc.)
+npm run format:check  # Prettier across repo (includes webui/, docs/, etc.)
 ```
 
 Pull requests run ESLint on every workspace, then Prettier `--check` on **changed** `ts`, `tsx`, `js`, `json`, `md`, `yml`, and `yaml` files vs the base branch ([`.github/workflows/pr-validation.yml`](.github/workflows/pr-validation.yml)). Husky **lint-staged** may run on commit (see root `package.json`).
@@ -102,7 +102,7 @@ Pull requests run ESLint on every workspace, then Prettier `--check` on **change
 To format Next.js files by hand from the repo root:
 
 ```bash
-npx prettier --write "nextjs/**/*.{ts,tsx,js}"
+npx prettier --write "webui/**/*.{ts,tsx,js}"
 ```
 
 ## Documentation

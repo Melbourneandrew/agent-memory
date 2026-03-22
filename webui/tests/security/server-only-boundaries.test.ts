@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-const nextjsRoot = join(__dirname, "../..");
+const webuiRoot = join(__dirname, "../..");
 const forbiddenImports = [
   "@/lib/server/core",
   "@agent-memory-cli/core",
@@ -11,8 +11,8 @@ const forbiddenImports = [
 
 describe("server-only boundaries", () => {
   test("client modules do not import server-only APIs", () => {
-    const files = collectSourceFiles(join(nextjsRoot, "app")).concat(
-      collectSourceFiles(join(nextjsRoot, "components")),
+    const files = collectSourceFiles(join(webuiRoot, "app")).concat(
+      collectSourceFiles(join(webuiRoot, "components")),
     );
     const clientFiles = files.filter((path) =>
       isClientModule(readFileSync(path, "utf-8")),
@@ -27,10 +27,7 @@ describe("server-only boundaries", () => {
   });
 
   test("server core entry remains server-only", () => {
-    const source = readFileSync(
-      join(nextjsRoot, "lib/server/core.ts"),
-      "utf-8",
-    );
+    const source = readFileSync(join(webuiRoot, "lib/server/core.ts"), "utf-8");
     expect(source).toContain('import "server-only";');
   });
 });

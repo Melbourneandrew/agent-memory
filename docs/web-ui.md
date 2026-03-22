@@ -44,4 +44,4 @@ The command itself only requires the API key. The UI can create an assistant ID 
 
 - The server runs locally and remains active until you terminate it (for example, `Ctrl+C`).
 - If automatic browser opening fails, use the printed localhost URL manually.
-- `agent-memory web` always runs **`next start`** against a **production** build (`nextjs/.next/BUILD_ID`). The published npm tarball includes that output from CI; it is **not** committed to git. From a source checkout, run `npm run build` (or at least `npm run build --workspace @agent-memory/nextjs`) before `agent-memory web`. For day-to-day UI work, use `npm run dev --workspace @agent-memory/nextjs` instead.
+- `agent-memory web` always runs **`next start`** against a **production** build (`webui/.next/BUILD_ID`). The published npm tarball includes that output from CI; it is **not** committed to git. From a source checkout, run `npm run build` (or at least `npm run build --workspace @agent-memory/webui`) before `agent-memory web`. For day-to-day UI work, use `npm run dev --workspace @agent-memory/webui` instead.

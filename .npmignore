@@ -1,2 +1,2 @@
-# Installed dependencies live at the package root; do not ship a nested nextjs/node_modules.
-nextjs/node_modules
+# Installed dependencies live at the package root; do not ship a nested webui/node_modules.
+webui/node_modules

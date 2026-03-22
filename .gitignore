@@ -10,8 +10,8 @@ core/coverage/
 cli/node_modules/
 cli/dist/
 cli/coverage/
-nextjs/.next/
-nextjs/out/
-nextjs/build/
-nextjs/coverage/
+webui/.next/
+webui/out/
+webui/build/
+webui/coverage/
 site/
